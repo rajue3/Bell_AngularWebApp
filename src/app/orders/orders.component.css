@@ -1,0 +1,77 @@
+.demo-table {
+  width: 100%;
+}
+
+.demo-button-container {
+  padding-bottom: 16px;
+}
+
+.demo-button + .demo-button {
+  margin-left: 8px;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}
+
+.example-container {
+  position: relative;
+  min-height: 200px;
+  max-height: 400px;
+  overflow: auto;
+}
+
+table {
+  width:100%;
+}
+
+td.mat-column-star {
+  width: 20px;
+  padding-right: 8px;
+}
+
+th.mat-column-position, td.mat-column-position {
+  padding-left: 8px;
+}
+
+.mat-mdc-table-sticky-border-elem-right {
+  border-left: 1px solid #e0e0e0;
+}
+
+.mat-mdc-table-sticky-border-elem-left {
+  border-right: 1px solid #e0e0e0;
+}
+
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}
+
+/* working styles by Raju */
+.demo-row-is-clicked {
+  font-weight: bold;
+}
+tr.mat-mdc-row:hover {
+  /*background-color: yellow; */
+  background-color: #f5f0f0;
+}
+th.mat-mdc-header-cell {
+  background-color: #7986CB;
+  color:white;
+}
+
+.table-condensed{
+  font-size: 10px;
+}
+
+th {
+  background-color: #337ab7;
+  color:white;
+}
+

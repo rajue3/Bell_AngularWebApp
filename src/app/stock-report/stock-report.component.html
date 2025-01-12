@@ -1,0 +1,187 @@
+<h4 style="text-align: center;font-weight: bold;">Report5 : : Stock Report</h4>
+
+<div class="card">
+    <div class="row">
+      <div class="col-sm-3">
+        <label class="form-label" style="color: blue;"> Category </label><br/>
+        <p-multiSelect
+            filter="false" [options]="objCategories" [(ngModel)]="selectedCategories" optionLabel="Line"
+            (onClick)="selectedCategories" placeholder="Select Category(s)" (onChange)="getselectedCategories()"/>
+
+        <!-- <select [(ngModel)]="selectedCategory" name="matCat" style="width: 220px;height: 25px;">
+          <option value="all">--All--</option>
+          <option value="BISCUITES">BISCUITES</option>
+          <option value="CAKES">CAKES</option>
+          <option value="CHOCOLATES">CHOCOLATES</option>
+          <option value="COOL DRINKS">COOL DRINKS</option>
+          <option value="ECLAIRS">ECLAIRS</option>
+          <option value="NAMKEEN">NAMKEEN</option>
+          <option value="Raw Materials">RAW MATERIALS</option>
+          <option value="SOAPS">SOAPS</option>
+          <option value="SWEETS">SWEETS</option>
+          <option value="WAFFERS">WAFFERS</option>
+        </select> -->
+      </div>
+      <div class="col-sm-3">
+          <label class="form-label" style="color: blue;">Stock (In/Out) </label><br/>
+          <select [(ngModel)]="selectedTransType" name="matUsers" style="width: 220px;height: 25px;">
+          <option value="all">--All--</option>
+          <option value="IN">Stock Added (In)</option>
+          <option value="OUT">Stock Used (Out)</option>
+          <option value="LINE">Stock Used for Line (Out)</option>
+        </select>
+      </div>
+      <div class="col-sm-3">
+        <label class="form-label" style="color: blue;">User Name </label><br/>
+        <select [(ngModel)]="selectedUser" name="matTrans" style="width: 220px;height: 25px;">        
+          <option value="all">--All--</option>
+          <option *ngFor="let obj of objUsers" value={{obj.Line}}> {{obj.Line}} </option>
+        </select>
+    </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <label for="icon" style="color: blue;">Bill Date From</label><br/>
+        <p-calendar [(ngModel)]="pFromDate" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay" 
+          dateFormat="dd-M-yy"/>
+
+      <!-- <mat-form-field  style="width: 220px;" class="form-control">
+        <input matInput [matDatepicker]="picker1" [formControl]="billDate1" placeholder="From Date"
+        class="form-control">
+        <mat-hint>From Date</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field> -->
+      </div>
+      <div class="col-sm-3">
+        <label for="icon" style="color: blue;">Bill Date To</label><br/>
+        <p-calendar [(ngModel)]="pToDate" [iconDisplay]="'input'" [showIcon]="true" inputId="icondisplay"
+          dateFormat="dd-M-yy" />
+        <!-- <mat-form-field style="width: 220px;" class="form-control">
+          <input matInput [matDatepicker]="picker2" [formControl]="billDate2" placeholder="To Date"
+            class="form-control">
+          <mat-hint>To Date</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+         </mat-form-field> -->
+      </div>
+      <div class="col-sm-6">
+        &nbsp;
+      </div>
+</div>
+<div class="row">&nbsp;</div>
+  <div class="row">
+    <div class="col-sm-8" style="vertical-align: bottom;align-items: baseline;">
+      <!-- <p-button label="Test PrimeNG"></p-button>
+      <button pButton pRipple label="Submit" class="p-button-success"> </button>
+      <br> -->
+      <button class="btn btn-primary" (click)="ViewOutofStockItemsClicked('MinOrder')">
+        <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
+        View Out of Stock Items</button>&nbsp;&nbsp;
+      <button class="btn btn-primary" (click)="ViewAllItemsClicked('all')">
+        <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
+        View All Items with Stock </button>&nbsp;&nbsp;
+      <button class="btn btn-primary" (click)="ViewRawMaterialsUsageClicked('all')">
+        <span *ngIf="submitting3" class="spinner-border spinner-border-sm me-1"></span>
+        Stock Entries (In/Out) </button>&nbsp;&nbsp;
+      <button [hidden]="!showGrid1" class="btn btn-primary" (click)="dt1.exportCSV()">Export to Excel</button>  
+      <button [hidden]="!showGrid2" class="btn btn-primary" (click)="dt2.exportCSV()">Export 2 Excel</button>  
+    </div>    
+  </div>
+  <br/>
+  <div style="text-align: left;">
+    <h5><b>{{ reportName }} &nbsp; | </b> :: {{reportHeader}} </h5>    
+  </div>    
+</div>
+   
+<div class="card" style="background: #0000000e;" [hidden]="!showGrid1">
+    <div style="font-size: 12px;color: white;font-family: Verdana, sans-serif;">
+      <!-- <table class="table table-hover">
+        <thead> 
+          </thead>
+        <tbody>
+        </tbody>
+      </table>  -->
+      <p-table #dt1 [value]="filteredItems" [tableStyle]="{ 'min-width': '50rem' }" 
+        [columns]="cols" [exportHeader]="'customExportHeader'">
+        <ng-template pTemplate="header">
+          <tr>
+            <!-- <th class="table-th">SNo.</th> -->
+            <th class="table-th">Item Code</th>
+            <th class="table-th">Item Name</th>
+            <th class="table-th">Category</th>
+            <th class="table-th">MRP</th>
+            <th class="table-th">Rate</th>
+            <th class="table-th">Min Order Alert</th>
+            <th class="table-th">Stock in Box</th>
+            <th class="table-th">Stock in Packets</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr class="table-tr" [pSelectableRow]="rowData">
+              <td class="table-tr" style="border: 1px solid black;" *ngFor="let col of columns">
+                  {{ rowData[col.field] }}
+              </td>
+          </tr>
+      </ng-template>
+        <!-- <ng-template pTemplate="body" let-dataItem;>          
+          <tr *ngFor="let dataItem of filteredItems;let i=index;" (click)="onRowClicked(dataItem)"
+              [class.demo-row-is-clicked]="clickedRows.has(dataItem)">          
+            <td class="table-tr">{{ i+1 }}</td>
+            <td class="table-tr">{{dataItem.ItemCode}}</td>
+            <td class="table-tr">{{dataItem.ItemName}}</td>
+            <td class="table-tr">{{dataItem.CATEGORY}}</td>
+            <td class="table-tr">{{dataItem.MRP}}</td>
+            <td class="table-tr">{{dataItem.Rate}}</td>
+            <td class="table-tr">{{dataItem.Description}}</td>            
+            <td class="table-tr">{{dataItem.Qty}}</td>
+            <td class="table-tr">{{dataItem.STOCK}}</td>
+          </tr>
+          <tr *ngIf="filteredItems.length==0">
+            <td colspan="4" style="color:red;font-weight: bold;text-align: center;">
+              No data found.
+            </td>
+          </tr>
+        </ng-template> -->
+      </p-table>
+    </div>
+  </div>
+
+  <div class="card" style="background: #0000000e;" [hidden]="!showGrid2">
+    <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="500px"
+          dataKey="id" [rows]="10" selectionMode="single" [columns]="cols"
+          [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="false" paginatorPosition="top"
+          [exportHeader]="'customExportHeader'"
+          >
+        <ng-template pTemplate="header" let-columns>
+           <tr>
+            <th class="table-th" style="min-width:100px" *ngFor="let col of columns"
+              pFrozenColumn [frozen]="col.isFrozenColumn" >{{col.header}}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+              <!-- ON ROW CLICK IS WORKING IN P-TABLE
+              <td class="table-tr" style="border: 1px solid black;" *ngFor="let col of columns" pFrozenColumn [frozen]="col?.isFrozenColumn"
+              (click)="onRowClicked(rowData)">
+                {{rowData[col.field] || '0'}}
+              </td> -->
+              <td class="table-tr" style="border: 1px solid black;" *ngFor="let col of columns" pFrozenColumn [frozen]="col?.isFrozenColumn">
+                {{rowData[col.field] || '0'}}
+                <!-- {{ formatFieldValue(col.field,rowData[col.field]) }} -->
+  
+              </td>
+            </tr>
+            <!-- <tr [pSelectableRow]="rowitem" *ngFor="let row of dataTable" class="table-tr">
+              <td class="table-td" *ngFor="let item of row | keyvalue : unsorted"
+              pFrozenColumn>{{item.value || 0}}</td>
+            </tr> -->
+        </ng-template>
+  
+        <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="5"><h3 style="text-align: center;color: red;"><b>No data found.</b></h3></td>
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>

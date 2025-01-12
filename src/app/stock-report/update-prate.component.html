@@ -1,0 +1,126 @@
+<h4 style="text-align: center;font-weight: bold;">:: Update Purchase Rate & Minimum Order Alert ::</h4>
+<!-- <p-button label="Test PrimeNG"></p-button> &nbsp;
+<button pButton pRipple label="Submit" class="p-button-success" style="width: 220px;height: 25px;"> </button> -->
+<div class="card">
+    <p-toast></p-toast>
+    <div class="row">        
+      <div class="col-sm-6" style="vertical-align: bottom;align-items: baseline;">
+        <label class="form-label" style="color: blue;"> Category </label>&nbsp;&nbsp;
+        <p-multiSelect display="chip" placeholder="Loading..." 
+            filter="false" [options]="objCategories" [(ngModel)]="selectedCategories" optionLabel="Line"
+            (onClick)="selectedCategories" placeholder="Select Category(s)" (onChange)="getselectedCategories()"/>        
+            &nbsp;&nbsp;<button class="btn btn-primary" (click)="ViewAllItemsClicked('all')">
+                <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
+                View All Items </button>&nbsp;&nbsp;      
+        </div>    
+      
+    </div>
+    
+<div class="row">&nbsp;</div>
+  <div class="row">
+    
+    <br/>
+    <div style="text-align: left;">
+        <h5><b>{{ reportName }} &nbsp; | </b> :: {{reportHeader}} </h5>    
+    </div>    
+    </div>
+   
+ <div class="card" style="background: #0000000e;">
+    <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="500px"
+          editMode="row" [tableStyle]="{'min-width': '50rem'}"  
+          dataKey="ItemCode" [loading]="loading" [paginator]="false"
+          [exportHeader]="'customExportHeader'">
+        <ng-template pTemplate="header">
+           <tr>
+            <th class="table-th" style="width: 10%;">Item Code</th>
+            <th class="table-th" style="width: 25%;">Item Name</th>
+            <th class="table-th" style="width: 15%;">Category</th>
+            <th class="table-th" style="width: 10%;">Sale Rate</th>
+            <th class="table-th" style="width: 15%;">Purchase Rate</th>
+            <th class="table-th" style="width: 15%;">Min Order Alert</th>
+            <th class="table-th" style="width: 10%;"> Action</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+            <tr class="table-tr" [pEditableRow]="rowData">
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.ItemCode}}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.ItemName}}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.CATEGORY}}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.Rate | currency: '₹' }}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input 
+                            pInputText 
+                            type="text" 
+                            [(ngModel)]="rowData.PRate" />
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{ rowData.PRate | currency: '₹' }}
+                    </ng-template>
+                </p-cellEditor>
+             </td>            
+            <td pEditableColumnField="code" class="table-tr" style="border: 1px solid black;">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input 
+                            pInputText 
+                            type="text" 
+                            [(ngModel)]="rowData.MinOrderAlert" />
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{ rowData.MinOrderAlert }}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td>
+                <div class="flex align-items-center justify-content-center gap-2">
+                    <button 
+                        *ngIf="!editing" 
+                        pButton 
+                        pRipple 
+                        type="button" 
+                        pInitEditableRow 
+                        icon="pi pi-pencil" 
+                        (click)="onRowEditInit(rowData)" 
+                        class="p-button-rounded p-button-text">
+                    </button>
+                    <button 
+                        *ngIf="editing" 
+                        pButton 
+                        pRipple 
+                        type="button" 
+                        pSaveEditableRow 
+                        icon="pi pi-check" 
+                        (click)="onRowEditSave(rowData)" 
+                        class="p-button-rounded p-button-text p-button-success mr-2">
+                    </button>
+                    <button 
+                        *ngIf="editing" 
+                        pButton pRipple 
+                        type="button" 
+                        pCancelEditableRow 
+                        icon="pi pi-times" 
+                        (click)="onRowEditCancel(rowData, ri)" 
+                        class="p-button-rounded p-button-text p-button-danger">
+                    </button>
+                </div>
+            </td>
+            </tr>            
+        </ng-template>
+  
+        <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="5"><h3 style="text-align: center;color: red;"><b>No data found.</b></h3></td>
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>

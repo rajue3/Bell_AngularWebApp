@@ -1,0 +1,79 @@
+
+/* Responsive Styles */
+/*
+@media screen and (max-width: 767px) {
+  .card-container > *:not(.circle-link) ,
+  .terminal {
+    width: 100%;
+  }
+
+  .card:not(.highlight-card) {
+    height: 16px;
+    margin: 8px 0;
+  }
+
+  .card.highlight-card span {
+    margin-left: 72px;
+  }
+
+  svg#rocket-smoke {
+    right: 120px;
+    transform: rotate(-5deg);
+  }
+}
+
+@media screen and (max-width: 575px) {
+  svg#rocket-smoke {
+    display: none;
+    visibility: hidden;
+  }
+}
+
+
+
+.mat-toolbar{
+  height: 5vh;
+}
+
+.basic{
+    height: 8vh;
+}
+
+.span{
+   font-family:Georgia, serif;
+     font-style:Italic;
+     font-size:20px;
+}
+
+h6{
+    color:white;
+    font-size:12px;
+    font-weight:bold;
+    font-family: Verdana, sans-serif;
+}
+
+.mat-raised-button{
+    border-radius:20px;
+    max-height:10vh;
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    background: #6A5ACD;
+}
+
+.mat-icon {
+    transform: scale(1.5);
+}
+
+.mat-sidenav{
+    background: darkblue;
+}
+
+.tabs{
+    padding-left: 5px;
+    color: white;
+    font-size: 10px;
+    font-family:  Verdana, sans-serif;
+}
+
+*/

@@ -1,0 +1,50 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" >
+  <div class="container-fluid">
+    
+      <p class="navbar-brand">Welcome to Bell Brand</p>
+      <!-- <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+      </button> -->
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+          <div class="navbar-nav">
+          </div>
+      </div>
+  </div>
+</nav>
+<div class="card">
+    <h4 class="card-header">Login</h4>
+    <div>
+      <input type="checkbox" style="color:aliceblue"
+      [(ngModel)]="isAdmin" [ngModelOptions]="{standalone: true}">
+      <a style="cursor: pointer;" class="navbar-brand" (click)="usertypeclicked()">&nbsp;Admin User</a>
+    </div>
+    <div *ngIf="submitted && user.username==null">
+      <p style="color:red">&nbsp;Invalid Username or Password!</p>
+   </div>
+    <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['username'].errors }" />
+                <div *ngIf="submitted && f['username'].errors" class="invalid-feedback">
+                    <div *ngIf="f['username'].errors['required']">Username is required</div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" />
+                <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+                    <div *ngIf="f['password'].errors['required']">Password is required</div>
+                </div>
+            </div>
+            <div>
+                <button [disabled]="loading" class="btn btn-primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+                    Login
+                </button>
+                <!-- <a routerLink="../register" class="btn btn-link">Register</a> -->
+
+            </div>
+        </form>
+    </div>
+</div>

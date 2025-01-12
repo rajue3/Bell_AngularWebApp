@@ -1,0 +1,53 @@
+/*.modal-ku {
+  width: 550px;
+  margin: auto;
+}*/
+/*.fade.modal {
+  opacity: unset !important;
+}
+*/
+
+.mat-row:hover {
+  background-color: red;
+}
+
+.table-boarder{
+  font-size: 10px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid;
+}
+th {
+  background-color: #7986CB;
+  color:white;
+}
+
+th, td {
+  text-align: left;
+  padding: 2px;
+  border-bottom: 1px solid #ddd;
+}
+tr:hover {background-color: #f5e0e0;}
+
+/* for mat toolbar width adjust
+.mat-toolbar {
+  min-height: 50px !important;
+  height: 50px !important;
+}
+
+.mat-toolbar-row {
+  min-height: 50px !important;
+  height: 50px !important;
+}
+*/
+
+.myapp-no-padding-dialog .mat-dialog-container {
+  padding: 0;
+}
+.example-button-row button,
+.example-button-row input {
+  margin-right: 5px;
+  font-size: 10px;
+}

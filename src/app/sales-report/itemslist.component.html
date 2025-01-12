@@ -1,0 +1,73 @@
+<!-- <mat-toolbar color="primary" style="min-height: 40px !important; height: 40px !important;">
+  <div style="margin-left: 95%;margin-right: 10px;">
+    <span>
+      <button mat-icon-button (click)="onCloseViewItemsModal()" >
+        <mat-icon iconPositionEnd style="font-size: 22px; width: 22px; height: 22px;">close</mat-icon>
+      </button>
+    </span>
+  </div>
+  </mat-toolbar>
+    ** add filter and billnumber in the table
+  -->
+  <br>
+  <div style="margin-left: 11px;margin-right: 20px;">
+      <span><h5><B> Items List for Area : {{data.selectedArea}} & Bill Date : {{data.selectedDate}}
+        Total Bills : {{data.totalBills}}</B>
+      </h5></span>
+      <div class="modal-body" >
+        <table class="table-boarder" cellspacing="0" width="100%">
+          <thead class="header-color">
+            <tr class="info">
+              <th scope="col">S.No</th>
+              <th scope="col">Item Name</th>
+              <!-- <th scope="col">Rate</th> -->
+              <th scope="col">Sal_Qty</th>
+              <th scope="col">Ret_Qty</th>
+              <th style="text-align: right;" scope="col">Amount</th>
+              <!--<th (click)="sort('state.name')">State</th>-->
+            </tr>
+          </thead>
+          <tbody>
+            <!--<tr *ngFor="let objItem of lisfofItems" class="Warning">-->
+            <tr *ngFor="let objItem of lisfofItems;let i=index;">
+              <td>{{i+1}}.</td>
+              <td>{{objItem.ItemName}}</td>
+              <!-- <td>{{objItem.Rate }}</td> -->
+              <td>{{objItem.Qty}}</td>
+              <td>{{objItem.Ret_Qty}}</td>
+              <td style="text-align: right;">{{objItem.Amount | number:'1.0-2'}}</td>
+            </tr>
+            <tr *ngIf="!itemsCount">
+              <td>&nbsp;</td>
+              <td colspan="5">No Records Found</td>
+            </tr>
+            <tr>&nbsp;</tr>
+            <tr>
+              <td colspan="3"><b>Total Order : </b></td>
+              <td colspan="1" style="text-align: right;"><span><h5><B>{{TotalAmt | number:'1.0-2'}} </B></h5></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="example-button-row">
+
+      </div>
+
+        <div style="text-align: left;padding: 5px;">
+        </div>
+        <div style="text-align: right;" >
+          <button class="btn btn-primary" (click)="onCloseViewItemsModal()">Close</button>
+        </div>
+      <br>
+    </div>
+<!--<div class="container">
+    <div class="row grid-container">
+      <div class="col-md-10">
+        <div class="table">
+
+        </div>
+      </div>
+    </div>
+  </div>-->
+  <!--<table class="table table-striped table-hover">-->
+

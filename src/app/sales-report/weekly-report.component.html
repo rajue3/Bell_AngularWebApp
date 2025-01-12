@@ -1,0 +1,264 @@
+
+<h2 style="text-align: center;">Weekly Sales Report</h2>
+<table class="table-responsive" style="width: 500px;">
+  <tr>
+    <td>
+      Select Area
+      </td>
+      <td>
+        <select [(ngModel)]="selectedArea" name="matArea" style="width: 250px;">
+          <option *ngFor="let area of objAreas" value={{area.Line}}> {{area.Line}} </option>
+        </select>
+        <!-- <p-dropdown [options]="objAreas" [(ngModel)]="selectedArea" optionLabel="Area"
+          placeholder="Select a Area" /> -->
+      </td>
+  </tr>
+  <tr>
+    <td>
+      Select Date
+      </td>
+      <td>
+        <mat-form-field>
+          <input matInput [matDatepicker]="picker1" [formControl]="billDate">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+      </td>
+      <td>
+        <button class="btn btn-primary" (click)="ViewClicked(selectedArea)">View</button>
+        <!-- <button mat-raised-button>Submit</button> -->
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Filter
+      </td>
+      <td >
+        <filter-textbox (changed)="filterChanged($event)"></filter-textbox>
+      </td>
+      <td>
+        <button class="btn btn-primary" (click)="dt2.exportCSV()">Export</button>
+      </td>
+    </tr>
+</table>
+
+<div class="card">
+  <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="600px" [tableStyle]="{'min-width': '60rem'}"
+        dataKey="id" [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="false" paginatorPosition="top"
+        [globalFilterFields]="['Area', 'ShopName', 'CustomerName']"
+        selectionMode="single"
+        [(selection)]="selectedProducts"
+        [exportHeader]="'customExportHeader'"
+        [columns]="cols"
+        >
+      <ng-template pTemplate="header">
+          <tr>
+              <th pSortableColumn="Area" style="min-width:100px">Area <p-sortIcon field="Area" /></th>
+              <th pSortableColumn="ShopName" style="min-width:200px">ShopName <p-sortIcon field="ShopName" /></th>
+              <th pSortableColumn="CustomerName" style="min-width:200px"> CustomerName <p-sortIcon field="CustomerName" /></th>
+              <th pSortableColumn="Week1" style="min-width:100px"> Week1 <p-sortIcon field="Week1"/></th>
+              <th pSortableColumn="Week1" style="min-width:100px"> Week2 <p-sortIcon field="Week1"/></th>
+              <th pSortableColumn="Week1" style="min-width:100px"> Week3 <p-sortIcon field="Week1"/></th>
+              <th pSortableColumn="Week1" style="min-width:100px"> Week4 <p-sortIcon field="Week1"/></th>
+              <th pSortableColumn="Week1" style="min-width:200px"> Total Amount <p-sortIcon field="Week1"/></th>
+            </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowitem>
+          <tr [pSelectableRow]="rowitem" (click)="showItemsByCustID(rowitem)"
+          [class.demo-row-is-clicked]="clickedRows.has(rowitem)">
+              <td>{{ rowitem.Area }}</td>
+              <td>{{ rowitem.ShopName }}</td>
+              <td>{{ rowitem.CustomerName }}</td>
+              <td>{{ rowitem.Week1 }}</td>
+              <td>{{ rowitem.Week2 }}</td>
+              <td>{{ rowitem.Week3 }}</td>
+              <td>{{ rowitem.Week4 }}</td>
+              <td>{{ rowitem.TotalAmount }}</td>
+            </tr>
+      </ng-template>
+      <ng-template pTemplate="footer">
+        <tr>
+            <td colspan="3" class="text-right">Totals</td>
+            <td>{{Total_Week1 | currency: '₹'}}</td>
+            <td>{{Total_Week2 | currency: '₹'}}</td>
+            <td>{{Total_Week3 | currency: '₹'}}</td>
+            <td>{{Total_Week4 | currency: '₹'}}</td>
+            <td>{{GrandTotal | currency: '₹'}}</td>
+          </tr>
+    </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="5">No data found.</td>
+        </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- <mat-form-field>
+  <mat-label>Filter</mat-label>
+  <input matInput placeholder="Ex. Mia" #input>
+</mat-form-field>
+
+<div class="mat-elevation-z8">
+<mat-table [dataSource]="matDataSource" matSort>
+
+  <ng-container matColumnDef="Area">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Area </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.Area}} </mat-cell>
+    <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
+  </ng-container>
+  <ng-container matColumnDef="ShopName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Shop Name </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.ShopName}} </mat-cell>
+    <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
+  </ng-container>
+  <ng-container matColumnDef="CustomerName">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Customer Name </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.CustomerName}} </mat-cell>
+    <mat-footer-cell *matFooterCellDef> Total </mat-footer-cell>
+  </ng-container>
+  <ng-container matColumnDef="Week1">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Week1 </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.Week1}} </mat-cell>
+    <mat-footer-cell *matFooterCellDef> {{getTotalWeek1() | currency}}  </mat-footer-cell>
+  </ng-container>
+  <ng-container matColumnDef="Week2">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Week2 </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.Week2}} </mat-cell>
+    <mat-footer-cell *matFooterCellDef> {{getTotalWeek2() | currency}}  </mat-footer-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="Week3">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Week3 </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.Week3}} </mat-cell>
+    <mat-footer-cell *matFooterCellDef> {{getTotalWeek3() | currency}}  </mat-footer-cell>
+  </ng-container>
+  <ng-container matColumnDef="Week4">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Week4 </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.Week4}} </mat-cell>
+    <mat-footer-cell *matFooterCellDef> {{getTotalWeek4() | currency}}  </mat-footer-cell>
+  </ng-container>
+  <ng-container matColumnDef="TotalAmount">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> Total Amount </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{row.TotalAmount}} </mat-cell>
+    <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+     (click)="showItemsByCustID(row)" [class.demo-row-is-clicked]="clickedRows.has(row)">
+    </mat-row>
+  <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+
+</mat-table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div> -->
+
+<!-- <table mat-table [dataSource]="filteredItems" class="mat-elevation-z8">
+  <ng-container matColumnDef="Area">
+    <th mat-header-cell *matHeaderCellDef> Area </th>
+    <td mat-cell *matCellDef="let transaction"> {{transaction.Area}} </td>
+    <td mat-footer-cell *matFooterCellDef> Total </td>
+  </ng-container>
+
+  <ng-container matColumnDef="ShopName">
+    <th mat-header-cell *matHeaderCellDef> Shop Name </th>
+    <td mat-cell *matCellDef="let transaction"> {{transaction.ShopName}} </td>
+    <td mat-footer-cell *matFooterCellDef>  </td>
+  </ng-container>
+  <ng-container matColumnDef="CustomerName">
+    <th mat-header-cell *matHeaderCellDef> Customer Name </th>
+    <td mat-cell *matCellDef="let transaction"> {{transaction.CustomerName}} </td>
+    <td mat-footer-cell *matFooterCellDef> </td>
+  </ng-container>
+  <ng-container matColumnDef="Week1">
+    <th mat-header-cell *matHeaderCellDef> Week1 (01-07) </th>
+    <td mat-cell *matCellDef="let transaction"> {{transaction.Week1}} </td>
+    <td mat-footer-cell *matFooterCellDef> {{getTotalWeek1() | currency}} </td>
+  </ng-container>
+  <ng-container matColumnDef="Week2">
+    <th mat-header-cell *matHeaderCellDef> Week2 (08-14) </th>
+    <td mat-cell *matCellDef="let transaction"> {{transaction.Week2}} </td>
+    <td mat-footer-cell *matFooterCellDef> {{getTotalWeek2() | currency}} </td>
+  </ng-container>
+  <ng-container matColumnDef="Week3">
+    <th mat-header-cell *matHeaderCellDef> Week3 (15-21) </th>
+    <td mat-cell *matCellDef="let transaction"> {{transaction.Week3 | currency}} </td>
+    <td mat-footer-cell *matFooterCellDef> {{getTotalWeek3() | currency}} </td>
+  </ng-container>
+  <ng-container matColumnDef="Week4">
+    <th mat-header-cell *matHeaderCellDef> Week4 (22-28) </th>
+    <td mat-cell *matCellDef="let transaction"> {{transaction.Week3 | currency}} </td>
+    <td mat-footer-cell *matFooterCellDef> {{getTotalWeek4() | currency}} </td>
+  </ng-container>
+  <ng-container matColumnDef="TotalAmount">
+    <th mat-header-cell *matHeaderCellDef> TotalAmount </th>
+    <td mat-cell *matCellDef="let transaction"> {{transaction.TotalAmount | currency}} </td>
+    <td mat-footer-cell *matFooterCellDef> {{getTotalAll() | currency}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+  mat-row (click)="showItemsByCustID(row)" [class.demo-row-is-clicked]="clickedRows.has(row)"
+  ></tr>
+  <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+</table> -->
+
+
+<!-- <div class="ag-theme-balham" style="width: 100%; height: 100%;">
+<ag-grid-angular
+ style="width: 80%; height: 350px;"
+ [rowData]="rowData"
+ [columnDefs]="colDefs"
+ [class]="themeClass"
+ (rowClicked)="showItemsByCustID($event)"
+ [grandTotalRow]="grandTotalRow"
+ [pagination]="true"
+ [paginationPageSize]="20"
+>
+</ag-grid-angular>
+</div> -->
+
+<!-- <section >
+  <div class="container">
+    <table class="table table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Area</th>
+          <th>Shop Name</th>
+          <th>Customer Name</th>
+          <th>Week1</th>
+          <th>Week2</th>
+          <th>Week3</th>
+          <th>Week4</th>
+          <th>Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dataItem of filteredItems;" >
+          <td>{{dataItem.Area}}</td>
+          <td>{{dataItem.ShopName}}</td>
+          <td>{{dataItem.CustomerName}}</td>
+          <td>{{dataItem.Week1}}</td>
+          <td>{{dataItem.Week2}}</td>
+          <td>{{dataItem.Week3}}</td>
+          <td>{{dataItem.Week4}}</td>
+          <td>{{dataItem.TotalAmount}}</td>
+        </tr>
+        <tr>
+          <td colspan="2"></td>
+          <td colspan="1">Totals (₹):</td>
+          <td colspan="1">{{Total_Week1}}</td>
+          <td colspan="1">{{Total_Week2}}</td>
+          <td colspan="1">{{Total_Week3}}</td>
+          <td colspan="1">{{Total_Week4}}</td>
+          <td colspan="1">{{GrandTotal}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </section> -->
+

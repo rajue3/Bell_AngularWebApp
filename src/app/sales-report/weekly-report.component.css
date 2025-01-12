@@ -1,0 +1,113 @@
+/* table {
+  width: 100%;
+} */
+:host ::ng-deep.p-datatable-table tr:nth-child(even){
+  background-color: #00000005;
+}
+
+.tablewithborder {
+  height: 350px;display: block;width: 100%;overflow-x: auto;
+  overflow-y: auto;font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+}
+.primengtable {
+  display: block;font-size: 9pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border-spacing: 2px;
+  padding: 1px;
+}
+
+.mytable {
+  height: 320px;display: block;width: 100%;font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.table-tr:hover {
+  border-color: currentColor;
+  background-color: #f5e0e0;
+ }
+ .table-th {
+  font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 4px;
+  text-align: left;
+  background-color: #337ab7;
+  color:white;
+ }
+.table-td
+{
+  border: 1px solid black;
+  border-radius: 10px;
+   padding: 4px;
+  text-align: left;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+}
+
+/* working styles by Raju */
+.demo-row-is-clicked {
+  font-weight: bold;
+}
+tr.mat-mdc-row:hover {
+  /*background-color: yellow; */
+  background-color: #f5f0f0;
+}
+th.mat-mdc-header-cell {
+  background-color: #7986CB;
+  color:white;
+}
+
+.table-condensed{
+  font-size: 10px;
+}
+th {
+  background-color: #337ab7;
+  color:white;
+}
+
+
+/*This is modifying the btn-primary colors but you could create your own .btn-something class as well*/
+/* .btn-primary {
+  color: #fff;
+  background-color: #0495c9;
+  border-color: #357ebd;
+}
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+  color: #fff;
+  background-color: #00b3db;
+  border-color: #285e8e;
+} */
+
+#transparentScrollbarDiv::-webkit-scrollbar {
+  width: inherit;
+}
+
+/* this targets the default scrollbar (compulsory) */
+
+#transparentScrollbarDiv::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* the new scrollbar will have a flat appearance with the set background color */
+
+#transparentScrollbarDiv::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+/* this will style the thumb, ignoring the track */
+
+#transparentScrollbarDiv::-webkit-scrollbar-button {
+  background-color: transparent;
+}
+
+/* optionally, you can style the top and the bottom buttons (left and right for horizontal bars) */
+
+#transparentScrollbarDiv::-webkit-scrollbar-corner {
+  background-color: transparent;
+}

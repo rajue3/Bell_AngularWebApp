@@ -1,0 +1,106 @@
+<h4 style="text-align: center;font-weight: bold;">Report2 :: Sales Report</h4>
+<div class="card">
+<table class="table-responsive" style="width: 500px;">
+  <tr>
+    <td>
+       Area
+      </td>
+      <td>
+        <select [(ngModel)]="selectedArea" name="matArea" (change)="bindShopNames(selectedArea)">
+          <option value="all">--All--</option>
+          <option *ngFor="let area of objAreas" value={{area.Line}}
+           > {{area.Line}} </option>
+        </select>
+      </td>
+  </tr>
+  <tr>
+    <td>
+       Date
+      </td>
+      <td>
+        <mat-form-field  style="width: 220px;" class="form-control">
+          <input matInput [matDatepicker]="picker1" [formControl]="billDate1" placeholder="Bill Date"
+          class="form-control">
+          <mat-hint>
+
+            <input type="checkbox"  (click)="changeSearchByDateOption($event)" >&nbsp;By Bill Date</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>        
+      </td>
+      <td>
+        <!-- <button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">View</button> -->
+        <button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">
+          <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
+          View Sales</button>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Filter
+      </td>
+      <td >
+        <filter-textbox (changed)="filterChanged($event)"></filter-textbox>
+      </td>
+    </tr>
+</table>
+</div>
+<div class="card">
+  <div style="font-size: 12px;color: white;font-family: Verdana, sans-serif;">
+    <table class="table table-hover">
+      <thead >
+        <tr>
+          <th>Area</th>
+          <th>Tot Purch Amt</th>
+          <th>Tot Sales Amt</th>
+          <th>Profit Amt</th>
+          <th>Profit %</th>
+          <th>Total Bills</th>
+          <th>Bill Date</th>
+          <th>OPERATOR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- <tr *ngFor="let dataItem of filteredItems;" > -->
+          <tr class="routerLink" *ngFor="let dataItem of filteredItems;" (click)="onRowClicked(dataItem)"
+          [class.demo-row-is-clicked]="clickedRows.has(dataItem)">
+          <td>{{dataItem.Area}}</td>
+          <td>{{dataItem.Purchase_Amount }}</td>
+          <td>{{dataItem.Amount }}</td>
+          <td>{{dataItem.Profit_Amount }}</td>
+          <td>{{dataItem.Profit_Percent }}</td>
+          <td>{{dataItem.TotalBills}}</td>
+          <td>{{dataItem.BillDate}}</td>
+          <td>{{dataItem.UserName}}</td>
+        </tr>
+        <tr *ngIf="filteredItems.length==0"><td colspan="4" style="color:red;font-weight: bold;text-align: center;">
+          No data found. Please change Area and Bill Date.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- <div class="table">
+    <table class="table table-hover">
+      <thead >
+        <tr>
+          <th>Sales Man</th>
+          <th>Shop Name</th>
+          <th>Item Name</th>
+          <th>Rate </th>
+          <th>Qty</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dataItem of filteredItems;" >
+          <td>{{dataItem.SalesMan}}</td>
+          <td>{{dataItem.ShopName}}</td>
+          <td>{{dataItem.ItemName}}</td>
+          <td>{{dataItem.Rate}}</td>
+          <td>{{dataItem.Qty}}</td>
+          <td>{{dataItem.Amount}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div> -->
+
+</div>

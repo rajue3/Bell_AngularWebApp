@@ -1,0 +1,15 @@
+<div class="p-4">
+  <div class="container">
+    <p-toast></p-toast>
+    <h1>Hi {{user?.username}}!</h1>
+    <p>Welcome to Admin page!</p>
+    <div *ngIf="user?.usertype=='admin'">
+      <p><a routerLink="/users">Manage Users</a></p>
+      <button class="btn btn-link nav-item nav-link" (click)="logout()">Logout</button>
+    </div>
+    <!--<div class="card flex justify-content-center">
+      <p-toast />
+      <p-button (onClick)="show()" label="Show" />
+    </div>-->
+  </div>
+</div>

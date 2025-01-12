@@ -1,0 +1,100 @@
+<!-- <section>
+  <table mat-table [dataSource]="dataSource" style="width:600px;height:auto" matSort (matSortChange)="announceSortChange($event)"
+         class="mat-elevation-z8">
+  <ng-container matColumnDef="ID">
+      <th mat-header-cell *matHeaderCellDef > ID.</th>
+      <td mat-cell *matCellDef="let element"> {{element.ID}}. </td>
+  </ng-container>
+
+    <ng-container matColumnDef="Area">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Area  </th>
+      <td mat-cell *matCellDef="let element"> {{element.Area}} </td>
+    </ng-container>
+    <ng-container matColumnDef="ShopName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Shop Name  </th>
+        <td mat-cell *matCellDef="let element"> {{element.ShopName}} </td>
+      </ng-container>
+      <ng-container matColumnDef="CustomerName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Customr Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.CustomerName}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Mobile">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Mobile </th>
+            <td mat-cell *matCellDef="let element"> {{element.Mobile}} </td>
+        </ng-container>
+          <ng-container matColumnDef="LANDMARK">
+         <th mat-header-cell *matHeaderCellDef mat-sort-header>LandMark</th>
+            <td mat-cell *matCellDef="let element"> {{element.LANDMARK}} </td>
+        </ng-container>
+        <ng-container matColumnDef="SalesMan">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>SalesMan </th>
+            <td mat-cell *matCellDef="let element"> {{element.SalesMan}} </td>
+        </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row (click)="onRowClicked(row)" [class.demo-row-is-clicked]="clickedRows.has(row)"
+      *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  </section> -->
+    <!-- this is working without material. -->
+    <!-- <div class="card">
+      <div style="font-size: 12px;color: white;font-family: Verdana, sans-serif;">
+      <table class="table table-hover">
+        <thead >
+          <tr>
+            <th>SNo.</th>
+            <th>Area</th>
+            <th>Shop Name</th>
+            <th>Customer Name</th>
+            <th>Mobile</th>
+            <th>SalesMan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="routerLink" *ngFor="let dataItem of dataSource;let i=index;" (click)="onRowClicked(dataItem)"
+          [class.demo-row-is-clicked]="clickedRows.has(dataItem)">
+            <td>{{i+1}}.</td>
+            <td>{{dataItem.Area}}</td>
+            <td>{{dataItem.ShopName}}</td>
+            <td>{{dataItem.CustomerName}}</td>
+            <td>{{dataItem.Mobile}}</td>
+            <td>{{dataItem.SalesMan}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div> -->
+  <div class="col-sm-8" style="vertical-align: bottom;align-items: baseline;">
+    <button class="btn btn-primary" (click)="dt2.exportCSV()">Export to Excel</button>
+  </div>
+  <div class="card" style="background: #0000000e;">
+    <p-table #dt2 [value]="dataSource" [scrollable]="true" scrollHeight="500px"
+          dataKey="id" [rows]="10" selectionMode="single" [columns]="cols"
+          [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="false" paginatorPosition="top"
+          [exportHeader]="'customExportHeader'"
+          >
+        <ng-template pTemplate="header" let-columns>
+           <tr>
+            <th class="table-th" style="min-width:100px" *ngFor="let col of columns"
+              pFrozenColumn [frozen]="col.isFrozenColumn" >{{col.header}}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+              <td class="table-tr" style="border: 1px solid black;" *ngFor="let col of columns" pFrozenColumn [frozen]="col?.isFrozenColumn">
+                {{rowData[col.field] || '0'}}
+              </td>
+            </tr>
+            <!-- <tr [pSelectableRow]="rowitem" *ngFor="let row of dataTable" class="table-tr">
+              <td class="table-td" *ngFor="let item of row | keyvalue : unsorted"
+              pFrozenColumn>{{item.value || 0}}</td>
+            </tr> -->
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="5"><h3 style="text-align: center;color: red;"><b>No data found.</b></h3></td>
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>

@@ -1,0 +1,83 @@
+GIT path: 
+D:\Raju_Dev\Bhavani Projects\Bell_DBScripts_Git\bell_dbscripts
+
+Bell Brand : https://bellbrandbhavanikhara.in
+
+-- API direct swagger link: https://api.zionwellmark.in/swagger/ui/index
+
+-> get all Lines/Areas/shoops /Categories / UserNames
+SP : USP_GET_AREALIST
+
+1. Customer Details: 
+page: Customer/ Customer.component.ts
+SP : BELL_SP_GET_All_LS_Customers
+	 USP_GET_AREALIST
+
+2. Sales Report: 
+Page: Sales-Report/Sales-Report.component.ts
+SP : BELL_GET_TOTAL_SALES_BY_AREA_NEW
+POPUP : SALESREPORT/ITEMSLIST.COMPONENT.TS
+	SP: BELL_GET_LS_ItemsByArea_Date
+
+3. Total Items Sale by Date: 
+page: Weekly-itemscount.component 
+a. Item wise Sales: 
+	SP: USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE  (not using USP_ITEMS_WISE_SALES_COUNT_BY_BILLDATE)
+b. Shop wise Sales with Bill#: 
+	SP: USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE
+c. Bill wise Sales:
+	SP: BELL_SHOP_WISE_SALES_BY_BILLNUMBER
+d. shop wise sales:
+	USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE	
+e. Show Inactive Shops:
+	BELL_GET_INACTIVE_SHOPS
+f. Shop wise Total Sales
+	SP: BELL_SHOP_WISE_TOTAL_SALES
+	
+4. Sale by Item Name
+Page: sales-report-byitem.component.ts
+SP: USP_ITEMS_WISE_SALES_COUNT_BY_ITEMNAME
+
+5. Stock details:
+page: stock-report.component.ts
+a. View Out of Stock details:
+	SP: BELL_STOCK_DETAILS
+b. View All Items with Stock:
+	SP: BELL_STOCK_DETAILS
+c. Stock Entries (In/Out)
+	SP: BELL_GET_STOCK_TRANSACTIONS
+
+
+
+SPs from VB6 :
+BELL_INC_UPD_Bills
+BELL_INC_UPD_LS_ITEMS
+BELL_INC_UPD_LS_ITEMS_NEW
+BELL_INC_UPD_Customers
+BELL_INC_UPD_ITEMS_STOCK
+BELL_INC_UPD_MASTER_ITEMS
+
+-- SPs from Mobile app:
+
+
+---------------------------
+TortoiseGit
+---------------------------
+Failed to get UnRev file list
+fatal: detected dubious ownership in repository at 'D:/Raju_Dev/Bhavani Projects/Bell_DBScripts_Git'
+'D:/Raju_Dev/Bhavani Projects/Bell_DBScripts_Git' is owned by:
+	(inconvertible) (S-1-5-21-23556836-568902885-2308832249-1001)
+but the current user is:
+	RAJUE/rajue (S-1-5-21-2503000924-1691565884-3250368412-1001)
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory 'D:/Raju_Dev/Bhavani Projects/Bell_DBScripts_Git'
+
+---------------------------
+OK   
+---------------------------
+
+takeown /F *.* /R
+
+--** Below dos (open as Admin) command to change the owner of GIT (to fix the fatal: detected dubious ownership in repository at ...)
+>> takeown /F Bell_DBScripts_Git /R

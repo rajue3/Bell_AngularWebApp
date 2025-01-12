@@ -1,0 +1,147 @@
+<!--
+<div style="position:absolute;top:0;left:0;right:0;bottom:0;">
+    <div>
+-->
+ <!-- Start of Header  -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #0143a3;"  *ngIf="user">
+  <div class="container-fluid">
+    <img width="100px" height="45px" alt="Bell Brand" src="assets/images/logo_nobg.png"  />
+      <!-- <a href="#" class="navbar-brand">Bell Brand</a> -->
+      <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+          <a class="nav-item nav-link" routerLink="/users" routerLinkActive="active" *ngIf="user.usertype=='admin'">Users</a>
+          <!-- <a class="nav-item nav-link" routerLink="/admin" routerLinkActive="active">Admin</a> -->
+          <a class="btn btn-primary" routerLink="/cust" routerLinkActive="active">Customer Details</a>&nbsp;
+          <a class="btn btn-primary" routerLink="/sales" routerLinkActive="active">Sales Report</a>&nbsp;
+          <!-- <a class="btn btn-primary" routerLink="/weekly" routerLinkActive="active">Weekly Sales Report</a>&nbsp; -->
+          <a class="btn btn-primary" routerLink="/weeklyrepo2" routerLinkActive="active">Total Items Sale by Date</a>&nbsp;
+          <a class="btn btn-primary" routerLink="/salebyitem" routerLinkActive="active">Sales by Item Name </a>&nbsp;
+          <a class="btn btn-primary" routerLink="/stockdetails" routerLinkActive="active">Stock details </a>&nbsp;
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!-- <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div> -->
+
+          <div class="btn-group">
+            &nbsp;<button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              Action
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" routerLink="/updateprate">Update Purchase Rate & Min Order</a></li>
+              <li><a class="dropdown-item"  routerLink="/updatemrp">Test Edit Items</a></li>
+              <li><a class="dropdown-item" href="#">Something else here</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Separated link</a></li>
+            </ul>
+          </div>
+          <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Reports</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" style="color:blue" routerLink="/weekly" href="#">Weekly Report</a></li>
+              <li><a class="dropdown-item" style="color:blue" routerLink="/sales" href="#">Sales Report</a></li>
+            </ul>            
+          </li> 
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Edit </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" style="color:blue" routerLink="/weekly" href="#">Weekly Report</a></li>
+              <li><a class="dropdown-item" style="color:blue" routerLink="/sales" href="#">Sales Report</a></li>
+            </ul>            
+          </li>  -->
+        </div>
+          <div class="navbar-nav ms-auto">
+            <button class="btn btn-link nav-item nav-link" style="color: aliceblue;">Welcome! {{user.username}}</button>
+            <button class="btn btn-link nav-item nav-link" style="color: aliceblue;" (click)="logout()">Logout</button>
+          </div>
+      </div>
+  </div>
+</nav>
+<!-- End of Header  -->
+
+      <div style="overflow: auto;  position: absolute;  bottom:0;  left:0;  right:0;  top:50px;">
+        <div style="padding-top:2em;padding-bottom:2em;">
+          <div class="app-container" [ngClass]="{ 'bg-light': user }">
+            <!-- <p-toast position="center" /> -->            
+            <router-outlet (activate)="ShowOutofStockAlert()"></router-outlet>
+          </div>
+        </div>
+        </div>
+        <!-- <app-header></app-header> -->
+
+        <!-- <div class="content" role="main">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Services
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">  
+              <li>
+                <a class="dropdown-item" href="#">Web Development</a>
+                <ul class="dropdown-menu dropdown-submenu">
+                  <li>
+                    <a class="dropdown-item" href="#">Submenu Submenu item 1</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">Submenu Submenu item 2</a>
+                    
+                  </ul>
+                  </li>
+              
+  
+              <li><a class="dropdown-item" href="#">Software Development</a></li>
+              <li><a class="dropdown-item" href="#">Networking and Cloud</a></li>
+              <li><a class="dropdown-item" href="#">Cyber Defence and offensive</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">More</a></li>
+            </ul>
+          </li>
+        </div> -->
+
+        <footer>
+          <div class="navbar fixed-bottom" style="background-color: #0143a3;">
+            <div class="navbar-inner footer">
+              <div class="container">
+                <div class="row">
+                  <div class="col-md-12" style="color:#3568f5">
+                    Created by RajuE
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>       
+
+        <p-toast position="top-right" key="confirm" (onClose)="onReject()" [baseZIndex]="5000">
+          <ng-template let-message pTemplate="message">
+            <div class="flex flex-column align-items-center" style="flex: 1">
+              <div style="text-align: center;font-weight: bold;font-size: medium;">
+                <p>Alert</p>
+              </div>
+              <div class="font-medium text-lg my-3 text-900">
+                {{ message.summary }}                
+              </div>              
+              <div style="text-align: center;">
+                <button class="btn btn-primary" (click)="onConfirm()">View Stock</button> 
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <button class="btn btn-primary" (click)="onReject()">Close</button> 
+              </div>
+            </div>
+            </ng-template>
+      </p-toast>

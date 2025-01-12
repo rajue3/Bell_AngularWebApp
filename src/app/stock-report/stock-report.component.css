@@ -1,0 +1,43 @@
+.tablewithborder {
+  height: 350px;display: block;width: 100%;overflow-x: auto;
+  overflow-y: auto;font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+}
+.primengtable {
+  display: block;font-size: 9pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border-spacing: 2px;
+  padding: 1px;
+}
+
+.mytable {
+  height: 320px;display: block;width: 100%;font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.table-tr:hover {
+  border-color: currentColor;
+  background-color: #f5e0e0;  
+ }
+
+ .table-tr {
+  border-color: currentColor;
+  border: 1px solid black;
+ }
+ .table-th {
+  font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 4px;
+  text-align: left;
+  background-color: #337ab7;
+  color:white;
+ }
+.table-td
+{
+  border: 1px solid black;
+  border-radius: 10px;
+   padding: 4px;
+  text-align: left;
+}
+th {
+  background-color: #337ab7;
+  color: white;
+}
