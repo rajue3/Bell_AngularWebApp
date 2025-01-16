@@ -16,6 +16,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import { Table,TableModule } from 'primeng/table';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 //import { ConsoleReporter } from 'jasmine';
 
   // import {ModuleRegistry, ColDef, ValueGetterParams } from 'ag-grid-community'; // Column Definition Type Interface
@@ -108,6 +109,12 @@ export class  WeeklyItemsCountComponent {
   errorMsg:any;
   IsValid:boolean = false;
   filterTotalAmount:any;
+  cols!: Column[];
+  exportColumns!: ExportColumn[];
+  //totalShops:any = 0;
+  reportHeader:string = '';
+  dynamicRowColor:any = 'black';
+
    constructor(private router: Router, private dataService: DataService,
       private formBuilder: FormBuilder,public dialog: MatDialog,
       private dataFilter: DataFilterService, private sharedService: SharedService
@@ -118,11 +125,7 @@ export class  WeeklyItemsCountComponent {
         //console.log('previous month:', new Date(priorDate).toDateString());
         //this.billDate1 = new FormControl(new Date(priorDate));
         //this.matDataSource = new MatTableDataSource(this.dataSource);
-    }
-    cols!: Column[];
-    exportColumns!: ExportColumn[];
-    //totalShops:any = 0;
-    reportHeader:string = '';
+    }    
     
   ngOnInit(): void {
     this.bindAreasList('lines');
@@ -155,6 +158,11 @@ export class  WeeklyItemsCountComponent {
 
   //**this is to show columns in the same order without sorting. */ only for manual binding with table. not required for primeng table
   //unsorted(a: any, b: any): number { return 0; }
+  
+  downloadAsExcel(){
+    console.log('new export excel started..Report3');
+    this.sharedService.ExportToExcel(this.filteredItems, "Report3"); 
+  }
 
   generateReport(reportName:string)
   {
@@ -270,7 +278,7 @@ export class  WeeklyItemsCountComponent {
       var sessionDataSource = sessionStorage.getItem('filteredItems') || '';
       if (!sessionDataSource) { this.filteredItems = []; return };
         this.dataTable = this.filteredItems = JSON.parse(sessionDataSource);
-        console.log('sesson data from ngAfterViewInit: ',JSON.parse(sessionDataSource));
+        //console.log('sesson data from ngAfterViewInit: ',JSON.parse(sessionDataSource));
         if (this.dataTable.length == 0)    {   return;    }
         //this.reportHeader = "Total Items " + this.filteredItems.length;
         this.dynamicColumns = Object.keys(this.dataTable[0]);
@@ -289,16 +297,38 @@ export class  WeeklyItemsCountComponent {
       //this.submitting = false;
    }
 
-   formatFieldValue(colHeader:any,colValue:any)
+   formatFieldValue(colHeader:any,colValue:any,rowindex:number)
    {
-      //console.log('colHeader indexOf = ',colHeader.includes('QTY'));
+      this.dynamicRowColor = 'black';
+      let isPercentCol:boolean; 
+      let cellPercentValue:any;
+      isPercentCol = colHeader.includes('Profit_Amt');
+      //console.log('filteredItems with index: ',this.filteredItems[rowindex]['Profit_Percent']);
+      cellPercentValue = this.filteredItems[rowindex]['Profit_Percent']
+      if (isPercentCol && cellPercentValue <= 5)
+      {
+        this.dynamicRowColor = 'red';        
+      }
+      //else { this.dynamicRowColor = 'black'; }      
+      //console.log('colHeader.includes Percent : ',colHeader.includes('Percent'));
+      // if (isPercentCol)
+      // {
+      //     this.dynamicRowColor = 'red';        
+      //     console.log('colHeader includes Percent = ',colHeader);
+      //     return (colValue);
+      // }
+      if (colHeader.includes('Profit_Percent'))
+      {
+        return colValue + '%';
+      }
       if (colHeader != 'BILLNUMBER' && colHeader != 'SNO.' && colHeader != 'SHOPNAME' && colHeader != 'NAME' && !colHeader.includes('QTY') )
       {
           //console.log('formatFieldValue',Number(colValue).toFixed(2));
           return Number(colValue).toFixed(2);
-      }
+      }      
       else
-      {
+      {        
+        //return 'hi <font color=red>' + (colValue) + '</font>';
         return colValue || 0;
       }
    }
@@ -342,9 +372,11 @@ export class  WeeklyItemsCountComponent {
       this.dynamicColumns = Object.keys(this.dataTable[0]);
       let newCol:any;
       this.cols = [];
-      console.log('received items :',this.dataTable)
+      
+      //let exportCols = [];
+      //console.log('received items :',this.dataTable)
       if (this.dataTable.length == 0) { this.submitting1 = false; }
-      for(var item in this.dynamicColumns){
+      for(var item in this.dynamicColumns){        
         if(this.dynamicColumns[item] == 'SHOPNAME')
           newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:true};
         else
@@ -353,7 +385,7 @@ export class  WeeklyItemsCountComponent {
         this.cols.push(newCol);
       }
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
-      //console.log('column names from loop =',this.cols);
+      console.log('column names from loop =',this.cols);
       this.submitting1 = false;
       this.submitting2 = false;
       this.submitting3 = false;
@@ -365,7 +397,7 @@ export class  WeeklyItemsCountComponent {
      () => console.log('Retrieved LS Items using getBellWeeklyReportNew() '));
       //this.submitting1 = false;
   }
-
+  
   // onRowClicked(rowItem: any)
   // {
   //   alert(rowItem.NAME);

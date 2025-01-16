@@ -75,12 +75,12 @@
       <!-- <p-button label="Test PrimeNG"></p-button>
       <button pButton pRipple label="Submit" class="p-button-success"> </button>
       <br> -->
-      <button class="btn btn-primary" (click)="ViewOutofStockItemsClicked('MinOrder')">
-        <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
-        View Out of Stock Items</button>&nbsp;&nbsp;
       <button class="btn btn-primary" (click)="ViewAllItemsClicked('all')">
         <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
         View All Items with Stock </button>&nbsp;&nbsp;
+      <button class="btn btn-primary" (click)="ViewOutofStockItemsClicked('MinOrder')">
+        <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
+        View Out of Stock Items</button>&nbsp;&nbsp;      
       <button class="btn btn-primary" (click)="ViewRawMaterialsUsageClicked('all')">
         <span *ngIf="submitting3" class="spinner-border spinner-border-sm me-1"></span>
         Stock Entries (In/Out) </button>&nbsp;&nbsp;

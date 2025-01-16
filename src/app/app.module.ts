@@ -12,7 +12,8 @@ import { ProductService } from './services/test.product.service';  //for testing
 
 import { UpdateMRPComponent } from './update-mrp/update-mrp.component';
 import { UpdatePRateComponent } from './stock-report/update-prate.component';
-
+// import * as XLSX from 'xlsx';
+// import * as FileSaver from 'file-saver';
 
 import { AppComponent } from './app.component';
 import { DemoComponent } from './demo/demo.component';

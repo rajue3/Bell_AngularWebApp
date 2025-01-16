@@ -2,7 +2,7 @@
   width: 100%;
 } */
 :host ::ng-deep.p-datatable-table tr:nth-child(even){
-  background-color: #00000005;
+  background-color: #da1f1f05;
 }
 
 .tablewithborder {
@@ -32,12 +32,25 @@
   background-color: #337ab7;
   color:white;
  }
+
 .table-td
 {
   border: 1px solid black;
   border-radius: 10px;
-   padding: 4px;
-  text-align: left;
+  padding: 4px;
+  text-align: left;  
+}
+.table-td:hover {
+  border-color: currentColor;
+  background-color: #f4616186;
+ }
+ 
+.table-condensed{
+  font-size: 10px;
+}
+th {
+  background-color: #337ab7;
+  color:white;
 }
 
 .mat-mdc-row .mat-mdc-cell {
@@ -55,22 +68,12 @@
   font-weight: bold;
 }
 tr.mat-mdc-row:hover {
-  /*background-color: yellow; */
-  background-color: #f5f0f0;
+  background-color: #ffffff
 }
 th.mat-mdc-header-cell {
   background-color: #7986CB;
   color:white;
 }
-
-.table-condensed{
-  font-size: 10px;
-}
-th {
-  background-color: #337ab7;
-  color:white;
-}
-
 
 /*This is modifying the btn-primary colors but you could create your own .btn-something class as well*/
 /* .btn-primary {

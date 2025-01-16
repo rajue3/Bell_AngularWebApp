@@ -181,21 +181,24 @@ getselectedCategories()
   }
   
   clonedProducts: { [s: string]: ItemDetails } = {};
-  previousMRP:any;
+  previousPRate:any;
+  previousMinOrder:any;
   onRowEditInit(product: ItemDetails) {
     this.clonedProducts[product.ItemCode as string] = { ...product };
-    this.previousMRP = product.MRP;
+    this.previousPRate = product.PRate;
+    this.previousMinOrder=product.MinOrderAlert;
   }
 
 onRowEditSave(product: ItemDetails) {
-    if (product.MRP != '') {
+    if (product.PRate != '' && product.MinOrderAlert >=0) {
         delete this.clonedProducts[product.ItemCode as string];
         //save to DB
+        let loginUserName = this.user?.username;
         var objUpatedRowItem = {
           ItemCode: product.ItemCode,
           PRate: product.PRate,
-          MinOrderAlert:'WEB ' + product.MinOrderAlert,
-          USERNAME:this.user?.username ?? 'WEB-Admin'
+          MinOrderAlert:product.MinOrderAlert,
+          USERNAME: 'WEB ' + (loginUserName ?? 'Admin')
         };
         this.sharedService.UpdatePurchaseRateMinOrder(objUpatedRowItem).subscribe((response: any) => {
           console.log('Purchase Rate update response :', response);
@@ -204,8 +207,9 @@ onRowEditSave(product: ItemDetails) {
         (err: any) => console.log('Error occured at ViewOutofStockItemsClicked :',err),
           () => this.submitting1 = false);
     } else {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Invalid Purchase Rate' });
-        product.MRP=this.previousMRP;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Invalid Values...Please enter numeric values and try again. ' });
+        product.PRate=this.previousPRate;
+        product.MinOrderAlert=this.previousMinOrder;
     }
 }
 

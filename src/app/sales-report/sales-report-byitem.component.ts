@@ -380,7 +380,7 @@ export class  SalesReportByItemComponent {
       {
           this.dataSource = <any>response;
           this.dataTable = this.filteredItems = JSON.parse(this.dataSource);
-          console.log('response = ', this.dataTable);
+          //console.log('response = ', this.dataTable);
           //const obj = JSON.parse(this.dataSource);
           //this.dataTable = Object.values(obj);
           this.dynamicColumns = Object.keys(this.dataTable[0]);
@@ -532,7 +532,7 @@ bindShopNames(areaName:any)
       this.sharedService.getBellAreas(areaName,this.date1,this.date2).subscribe((response: Areas[]) => {
         this.objShops = response;
         this.totalShops = response.length;
-        console.log(response);
+        //console.log(response);
       },
       (err: any) => console.log(err),
       () => console.log('bindShopNames() retrieved Shop names'));
