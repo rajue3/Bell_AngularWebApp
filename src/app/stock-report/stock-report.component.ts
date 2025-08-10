@@ -73,6 +73,10 @@ export class StockReportComponent {
   submitting1 = false;
   submitting2 = false;
   submitting3 = false;
+  submitting4 = false;
+  submitting5 = false;
+  submitting6 = false;
+  submitting7 = false;
   filtertext: string = '';
   reportHeader:string = '';
   reportName:string='';
@@ -195,12 +199,13 @@ getselectedCategories()
       this.cols = [
         { field: 'ItemCode', header: 'ItemCode', customExportHeader: 'Item Code' },
         { field: 'ItemName', header: 'ItemName', customExportHeader: 'Item Name' },
-        { field: 'CATEGORY', header: 'CATEGORY', customExportHeader: 'Category' },
+        { field: 'CATEGORY', header: 'Category', customExportHeader: 'Category' },
         { field: 'MRP', header: 'MRP' },
         { field: 'Rate', header: 'Rate' },
-        { field: 'Description', header: 'Description', customExportHeader: 'Min Order Alert' },
-        { field: 'Qty', header: 'Qty', customExportHeader: 'Stock in Box'},
-        { field: 'STOCK', header: 'STOCK', customExportHeader:'Packets' }
+        { field: 'Description', header: 'Min Order Alert', customExportHeader: 'Min Order Alert' },
+        { field: 'TOTALITEMSINPACK', header: 'Pack Size', customExportHeader: 'TOTALITEMSINPACK'},
+        { field: 'Qty', header: 'Stock (in Packing Type)', customExportHeader: 'Stock in Box'},
+        { field: 'STOCK', header: 'Stock (Tot Packets)', customExportHeader:'Stock in Packets' }
       ];
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
 
@@ -219,6 +224,8 @@ getselectedCategories()
     this.submitting1 = false;    
     this.submitting2 = true;    
     this.submitting3 = false;    
+    this.submitting4 = false;    
+    this.submitting5 = false;    
     
     this.sharedService.GetStockDetails(strOption,this.selectedCategory).subscribe((response: ItemDetails[]) => {
       //this.dataSource = response;
@@ -231,12 +238,13 @@ getselectedCategories()
       this.cols = [
         { field: 'ItemCode', header: 'ItemCode', customExportHeader: 'Item Code' },
         { field: 'ItemName', header: 'ItemName', customExportHeader: 'Item Name' },
-        { field: 'CATEGORY', header: 'CATEGORY', customExportHeader: 'Category' },
+        { field: 'CATEGORY', header: 'Category', customExportHeader: 'Category' },
         { field: 'MRP', header: 'MRP' },
         { field: 'Rate', header: 'Rate' },
-        { field: 'Description', header: 'Description', customExportHeader: 'Min Order Alert' },
-        { field: 'Qty', header: 'Qty', customExportHeader: 'Stock in Box'},
-        { field: 'STOCK', header: 'STOCK', customExportHeader:'Packets' }
+        { field: 'Description', header: 'Min Order Alert', customExportHeader: 'Min Order Alert' },
+        { field: 'TOTALITEMSINPACK', header: 'Pack Size', customExportHeader: 'TOTALITEMSINPACK'},
+        { field: 'Qty', header: 'Stock (in Packing Type)', customExportHeader: 'Stock in Box'},
+        { field: 'STOCK', header: 'Stock (Tot Packets)', customExportHeader:'Stock in Packets' }
       ];
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
     },
@@ -245,7 +253,7 @@ getselectedCategories()
   }
 
   //this is to get all StockEntries using given filters.
-  ViewRawMaterialsUsageClicked(strOption:any) {
+  ViewStockEntries(strOption:any) {
 
     //alert(formatDate(this.pFromDate,'dd-MMM-yyyy','en-US'));
     this.showGrid1 = false;
@@ -253,6 +261,8 @@ getselectedCategories()
     this.submitting1 = false;    
     this.submitting2 = false;    
     this.submitting3 = true;   
+    this.submitting4 = false;    
+    this.submitting5 = false;    
     //this.date1 = this.billDate1.value;
     this.date1 = formatDate(this.pFromDate,'dd-MMM-yyyy','en-US');
     this.date2 = this.billDate2.value;
@@ -285,10 +295,153 @@ getselectedCategories()
       //console.log('eXPORT column names from loop =',this.exportColumns);
       //this.submitting3 = false;
     },
-      (err: any) => console.log('Error occured at ViewRawMaterialsUsageClicked:',err),
+      (err: any) => console.log('Error occured at ViewStockEntries:',err),
       () => this.submitting3 = false   );
     //this.submitting3 = false;
   }  
+
+  ViewLoadedButNotBilled1(strOption1: any,strOption2: any) {   
+    this.showGrid1 = true;
+    this.showGrid2 = false;
+
+    this.submitting1 = false;    
+    this.submitting2 = false;    
+    this.submitting3 = false;    
+    this.submitting4 = true;    
+    this.submitting5 = false;    
+    this.submitting6 = false;    
+    this.submitting7 = false;    
+    
+    this.sharedService.GetPendingOrders(strOption1,strOption2).subscribe((response: ItemDetails[]) => {
+      //this.dataSource = response;
+      this.dataSource = this.filteredItems = response;
+      this.reportHeader = "Total Items " + this.filteredItems.length;
+      this.reportName = 'Items Loaded but not Billed - Group by Item';
+      if (this.dataSource.length == 0) { this.submitting2 = false; }
+      //sessionStorage.setItem('Report5_DataSource', JSON.stringify(this.filteredItems));
+      //console.log('ViewAllItems Stock Details :',response);
+      this.cols = [
+        { field: 'ItemCode', header: 'ItemCode', customExportHeader: 'Item Code' },
+        { field: 'ItemName', header: 'ItemName', customExportHeader: 'Item Name' },
+        { field: 'TOTAL_PACKS', header: 'Total_Packs', customExportHeader: 'TOTAL_PACKS' },        
+        { field: 'RETURN_PACKS', header: 'Return_Packs' },        
+        { field: 'DAMAGE_PACKS', header: 'Damage_Packs', customExportHeader: 'DAMAGE_PACKS' },
+        { field: 'STOCK', header: 'Stock-Out', customExportHeader:'STOCK-OUT' }       
+
+      ];
+      this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
+    },
+      (err: any) => console.log('Error occured at ViewLoadedButNotBilled:',err),
+      () => this.submitting4 = false);    
+  }
+  //group by Billdate,Line and username
+  ViewLoadedButNotBilled2(strOption1: any,strOption2: any) {   
+    this.showGrid1 = true;
+    this.showGrid2 = false;
+
+    this.submitting1 = false;    
+    this.submitting2 = false;    
+    this.submitting3 = false;    
+    this.submitting4 = false;    
+    this.submitting5 = true;    
+    this.submitting6 = false;    
+    this.submitting7 = false;    
+
+    this.sharedService.GetPendingOrders(strOption1,strOption2).subscribe((response: ItemDetails[]) => {
+      //this.dataSource = response;
+      this.dataSource = this.filteredItems = response;
+      this.reportHeader = "Total Items " + this.filteredItems.length;
+      this.reportName = 'Items Loaded but not Billed - Group by BillDate & Area ';      
+      if (this.dataSource.length == 0) { this.submitting2 = false; }
+      //sessionStorage.setItem('Report5_DataSource', JSON.stringify(this.filteredItems));
+      //console.log('ViewAllItems Stock Details :',response);
+      this.cols = [
+        { field: 'ItemCode', header: 'ItemCode', customExportHeader: 'Item Code' },
+        { field: 'ItemName', header: 'ItemName', customExportHeader: 'Item Name' },
+        { field: 'TOTAL_PACKS', header: 'Total_Packs', customExportHeader: 'TOTAL_PACKS' },        
+        { field: 'RETURN_PACKS', header: 'Return_Packs' },        
+        { field: 'DAMAGE_PACKS', header: 'Damage_Packs', customExportHeader: 'DAMAGE_PACKS' },
+        { field: 'STOCK', header: 'Stock-Out', customExportHeader:'STOCK-OUT' },       
+        { field: 'ActionDate', header: 'BillDate', customExportHeader:'BILLDATE' },
+        { field: 'USERNAME', header: 'Username', customExportHeader:'USERNAME' },
+        { field: 'LINE', header: 'Line/Area', customExportHeader:'LINE' }
+      ];
+      this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
+    },
+      (err: any) => console.log('Error occured at ViewLoadedButNotBilled:',err),
+      () => this.submitting5 = false);    
+  }
+  ViewOrdersPlaced1(strOption1: any,strOption2: any) {   
+    this.showGrid1 = true;
+    this.showGrid2 = false;
+
+    this.submitting1 = false;    
+    this.submitting2 = false;    
+    this.submitting3 = false;    
+    this.submitting4 = false;    
+    this.submitting5 = false;    
+    this.submitting6 = true;    
+    this.submitting7 = false;
+
+    this.sharedService.GetPendingOrders(strOption1,strOption2).subscribe((response: ItemDetails[]) => {
+      //this.dataSource = response;
+      this.dataSource = this.filteredItems = response;
+      this.reportHeader = "Total Items " + this.filteredItems.length;
+      this.reportName = 'Orders Placed - Group by Item ';
+      if (this.dataSource.length == 0) { this.submitting2 = false; }
+      //sessionStorage.setItem('Report5_DataSource', JSON.stringify(this.filteredItems));
+      //console.log('ViewAllItems Stock Details :',response);
+      this.cols = [
+        { field: 'ItemCode', header: 'ItemCode', customExportHeader: 'Item Code' },
+        { field: 'ItemName', header: 'ItemName', customExportHeader: 'Item Name' },
+        { field: 'TOTAL_PACKS', header: 'Total_Packs', customExportHeader: 'TOTAL_PACKS' },        
+        { field: 'RETURN_PACKS', header: 'Return_Packs' },        
+        { field: 'DAMAGE_PACKS', header: 'Damage_Packs', customExportHeader: 'DAMAGE_PACKS' },
+        { field: 'STOCK', header: 'Stock-Out', customExportHeader:'STOCK-OUT' }       
+      ];
+      this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
+    },
+      (err: any) => console.log('Error occured at ViewOrdersPlaced:',err),
+      () => this.submitting6 = false);
+  }
+
+  //Group by Billdate,Line & Username
+  ViewOrdersPlaced2(strOption1: any,strOption2: any) {   
+    this.showGrid1 = true;
+    this.showGrid2 = false;
+
+    this.submitting1 = false;    
+    this.submitting2 = false;    
+    this.submitting3 = false;    
+    this.submitting4 = false;    
+    this.submitting5 = false;    
+    this.submitting6 = false;    
+    this.submitting7 = true;
+
+    this.sharedService.GetPendingOrders(strOption1,strOption2).subscribe((response: ItemDetails[]) => {
+      //this.dataSource = response;
+      this.dataSource = this.filteredItems = response;
+      this.reportHeader = "Total Items " + this.filteredItems.length;
+      this.reportName = 'Orders Placed - Group by Billdate & Line';
+      if (this.dataSource.length == 0) { this.submitting2 = false; }
+      //sessionStorage.setItem('Report5_DataSource', JSON.stringify(this.filteredItems));
+      //console.log('ViewAllItems Stock Details :',response);
+      this.cols = [
+        { field: 'ItemCode', header: 'ItemCode', customExportHeader: 'Item Code' },
+        { field: 'ItemName', header: 'ItemName', customExportHeader: 'Item Name' },
+        { field: 'TOTAL_PACKS', header: 'Total_Packs', customExportHeader: 'TOTAL_PACKS' },        
+        { field: 'RETURN_PACKS', header: 'Return_Packs' },        
+        { field: 'DAMAGE_PACKS', header: 'Damage_Packs', customExportHeader: 'DAMAGE_PACKS' },
+        { field: 'STOCK', header: 'Stock-Out', customExportHeader:'STOCK-OUT'},
+        { field: 'ActionDate', header: 'BillDate', customExportHeader:'BILLDATE' },
+        { field: 'USERNAME', header: 'Username', customExportHeader:'USERNAME' },
+        { field: 'LINE', header: 'Line/Area', customExportHeader:'LINE' },
+      ];
+      this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
+    },
+      (err: any) => console.log('Error occured at ViewOrdersPlaced:',err),
+      () => this.submitting7 = false);
+  }
 
   formatFieldValue(colHeader:any,colValue:any)
    {

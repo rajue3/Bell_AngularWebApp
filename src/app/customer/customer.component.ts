@@ -265,28 +265,41 @@ bindLinesList()
   }
   else
   { this.objLines = JSON.parse(sessionLinesList);
-    console.log('Lines retrieved from Session: ', this.objLines);
+    //console.log('Lines retrieved from Session: ', this.objLines);
   }
 }
-bindAreasList(strArea:string)
+bindAreasList(strType:string)
 {
-  var sessionAreasList = sessionStorage.getItem('custAreasList') || '';
+  //sessionStorage.removeItem('custAreasList')
+  const sessionAreasList = sessionStorage.getItem('custAreasList');    
+  //const sessionAreasList = sessionAreaNames ? JSON.parse(sessionAreaNames) : [];
+  //const sessionAreasList = JSON.parse(sessionStorage.getItem('custAreasList') || '[]');
   //if (sessionAreasList) { this.filteredItems = []; return };
-  if (!sessionAreasList)
-  {
-    this.sharedService.getBellAreas(strArea,'n','n').subscribe((response: Areas[]) => {
-      this.objAreas = response;
-      sessionStorage.setItem('custAreasList',JSON.stringify(this.objAreas));
-      //console.log('Area names : ', response);
+  //console.log('sessionAreasList : ', sessionAreasList);
+    //if (sessionAreasList === null || sessionAreasList === 'undefined' || sessionAreasList === undefined || sessionAreasList === '' || sessionAreasList === '[]')
+    if (!sessionAreasList)  
+    {
+      //console.log('session is empty ') 
+      this.sharedService.getBellAreas('area','n','n').subscribe((response: Areas[]) => {
+        sessionStorage.setItem('custAreasList',JSON.stringify(response));
+        //this.objAreas = response;
+        this.objAreas = response.filter(item => item.Line === strType)
+        //console.log('Area names : ', this.objAreas);
     },
-    (err: any) => console.log(err),
-    () => console.log('getCustomersPage() retrieved customers'));
-  }
+      (err: any) => console.log(err),
+      () => console.log('getCustomersPage() retrieved customers'));      
+    }  
   else
-  { this.objAreas = JSON.parse(sessionAreasList);
-    //console.log('Areas retrieved from Session: ', this.objAreas);
+  {
+      console.log('getting from session') 
+      var AllAreas:Areas[];
+      AllAreas = JSON.parse(sessionStorage.getItem('custAreasList') || '[]')
+      //console.log('Areas retrieved from Session: ', AllAreas);
+      if (AllAreas)
+      {this.objAreas = AllAreas.filter(item => item.Line === strType);}
   }
-}
+  
+  }
 bindShopNames(strArea:any)
   {
     //alert(strArea);

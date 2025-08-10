@@ -11,11 +11,12 @@
   -->
   <br>
   <div style="margin-left: 11px;margin-right: 20px;">
-      <span><h5><B> Items List for Area : {{data.selectedArea}} & Bill Date : {{data.selectedDate}}
-        Total Bills : {{data.totalBills}}</B>
+      <span><h5><B> Items List for Area :</B> {{data.selectedArea}} <B>Bill Date :</B> {{data.selectedDate}}
+      <br/>
+        <B>Shop :</B> {{data.selectedShop}} &nbsp;&nbsp; <B>Total Bills :</B> {{data.totalBills}}
       </h5></span>
       <div class="modal-body" >
-        <table class="table-boarder" cellspacing="0" width="100%">
+        <table *ngIf="data.reportName ==='itemsbyareadate'" class="table-boarder" cellspacing="0" width="100%">
           <thead class="header-color">
             <tr class="info">
               <th scope="col">S.No</th>
@@ -35,6 +36,36 @@
               <!-- <td>{{objItem.Rate }}</td> -->
               <td>{{objItem.Qty}}</td>
               <td>{{objItem.Ret_Qty}}</td>
+              <td style="text-align: right;">{{objItem.Amount | number:'1.0-2'}}</td>
+            </tr>
+            <tr *ngIf="!itemsCount">
+              <td>&nbsp;</td>
+              <td colspan="5">No Records Found</td>
+            </tr>
+            <tr>&nbsp;</tr>
+            <tr>
+              <td colspan="3"><b>Total Order : </b></td>
+              <td colspan="1" style="text-align: right;"><span><h5><B>{{TotalAmt | number:'1.0-2'}} </B></h5></span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <table *ngIf="data.reportName ==='ShopWiseTotalSales'" class="table-boarder" cellspacing="0" width="100%">
+          <thead class="header-color">
+            <tr class="info">
+              <th scope="col">S.No</th>
+              <th scope="col">Item Name</th>
+              <th scope="col">Rate</th>
+              <th scope="col">Sal_Qty</th>              
+              <th style="text-align: right;" scope="col">Amount</th>              
+            </tr>
+          </thead>
+          <tbody>            
+            <tr *ngFor="let objItem of lisfofItems;let i=index;">
+              <td>{{i+1}}.</td>
+              <td>{{objItem.ItemName}}</td>
+              <td>{{objItem.Rate }}</td>
+              <td>{{objItem.Qty}}</td>              
               <td style="text-align: right;">{{objItem.Amount | number:'1.0-2'}}</td>
             </tr>
             <tr *ngIf="!itemsCount">

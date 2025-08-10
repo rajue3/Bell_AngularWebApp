@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './customer/customer.component';
 import { CustomOrdersComponent } from './orders/orders.component';
 import { DemoComponent } from './demo/demo.component';
+import { TableFrozenColumnsDemo } from './demo/table-frozen-columns-demo';
 import { SalesReportComponent } from './sales-report/sales-report.component';
 import { WeeklyReportComponent } from './sales-report/weekly-report.component';
 import { WeeklyItemsCountComponent } from './sales-report/weekly-itemscount.component';
@@ -34,6 +35,7 @@ const routes: Routes = [
   { path: 'updateprate', component: UpdatePRateComponent,canActivate: [AuthGuard]},
   
   { path: 'demo', component: DemoComponent},
+  { path: 'table-frozen-col', component: TableFrozenColumnsDemo},
   //{ path: 'orders', component: CustomOrdersComponent},
 
     // otherwise redirect to home

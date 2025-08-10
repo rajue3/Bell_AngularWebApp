@@ -74,16 +74,16 @@
     <div class="col-sm-8" style="vertical-align: bottom;align-items: baseline;">
       <!-- <p-button label="Test PrimeNG"></p-button>
       <button pButton pRipple label="Submit" class="p-button-success"> </button>
-      <br> -->
-      <button class="btn btn-primary" (click)="ViewAllItemsClicked('all')">
-        <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
-        View All Items with Stock </button>&nbsp;&nbsp;
+      <br> -->      
       <button class="btn btn-primary" (click)="ViewOutofStockItemsClicked('MinOrder')">
         <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
         View Out of Stock Items</button>&nbsp;&nbsp;      
-      <button class="btn btn-primary" (click)="ViewRawMaterialsUsageClicked('all')">
+      <button class="btn btn-primary" (click)="ViewAllItemsClicked('all')">
+          <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
+          View All Items with Stock </button>&nbsp;&nbsp;  
+      <button class="btn btn-primary" (click)="ViewStockEntries('all')">
         <span *ngIf="submitting3" class="spinner-border spinner-border-sm me-1"></span>
-        Stock Entries (In/Out) </button>&nbsp;&nbsp;
+        Stock Entries (In/Out) </button>&nbsp;&nbsp;      
       <button [hidden]="!showGrid1" class="btn btn-primary" (click)="dt1.exportCSV()">Export to Excel</button>  
       <button [hidden]="!showGrid2" class="btn btn-primary" (click)="dt2.exportCSV()">Export 2 Excel</button>  
     </div>    
@@ -91,6 +91,18 @@
   <br/>
   <div style="text-align: left;">
     <h5><b>{{ reportName }} &nbsp; | </b> :: {{reportHeader}} </h5>    
+    <button class="btn btn-primary" (click)="ViewLoadedButNotBilled1('pendingbills','no')">
+      <span *ngIf="submitting4" class="spinner-border spinner-border-sm me-1"></span>
+      Loaded but Not Billed </button>&nbsp;&nbsp;
+    <button class="btn btn-primary" (click)="ViewLoadedButNotBilled2('pendingbills','yes')">
+      <span *ngIf="submitting5" class="spinner-border spinner-border-sm me-1"></span>
+      Loaded but Not Billed by Line </button>&nbsp;&nbsp;
+    <button class="btn btn-primary" (click)="ViewOrdersPlaced1('orders','no')">
+        <span *ngIf="submitting6" class="spinner-border spinner-border-sm me-1"></span>
+        Orders Placed</button>&nbsp;&nbsp;
+    <button class="btn btn-primary" (click)="ViewOrdersPlaced2('orders','yes')">
+      <span *ngIf="submitting7" class="spinner-border spinner-border-sm me-1"></span>
+      Orders Placed by Line </button>&nbsp;&nbsp;
   </div>    
 </div>
    
@@ -104,17 +116,19 @@
       </table>  -->
       <p-table #dt1 [value]="filteredItems" [tableStyle]="{ 'min-width': '50rem' }" 
         [columns]="cols" [exportHeader]="'customExportHeader'">
-        <ng-template pTemplate="header">
-          <tr>
-            <!-- <th class="table-th">SNo.</th> -->
-            <th class="table-th">Item Code</th>
+        <ng-template pTemplate="header" let-columns>
+          <tr>            
+            <!-- <th class="table-th">Item Code</th>
             <th class="table-th">Item Name</th>
             <th class="table-th">Category</th>
             <th class="table-th">MRP</th>
             <th class="table-th">Rate</th>
             <th class="table-th">Min Order Alert</th>
             <th class="table-th">Stock in Box</th>
-            <th class="table-th">Stock in Packets</th>
+            <th class="table-th">Stock in Packets</th> -->
+            <th class="table-th" style="border: 1px solid black;" *ngFor="let col of columns">
+              {{ col.header }}
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">

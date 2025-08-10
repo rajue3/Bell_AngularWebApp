@@ -10,8 +10,10 @@ import { ItemsByCustIDComponent } from './itemslist.component';
 import { DateAdapter } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ChartModule } from 'primeng/chart';
 
 import { ItemDetails,BellCustDetails,BellAreaWiseOrders,Areas,Shops, IOrder, IPagedResults } from '../shared/interfaces';
+import { ChartDataset } from 'chart.js';
 // import { AlertService } from '../shared/_alert';
 // import { interval, Subscription } from 'rxjs';
 // import { MatPaginator } from '@angular/material/paginator';
@@ -33,21 +35,49 @@ interface Column {
     header: string;
     customExportHeader?: string;
     isFrozenColumn: boolean;
+    isFrozen: string;
 }
 interface ExportColumn {
     title: string;
     dataKey: string;
 }
+ interface objChartData {
+    labels: string[];
+    //datasets:string[];
+    datasets:objChartDatasets[];
+  } 
+interface objChartDatasets {
+    label: string;
+    data:string[];
+    borderColor: string;
+    backgroundColor:string;
+  }
+
   @Component({
     selector: 'sales-by-item',
     templateUrl: './sales-report-byitem.component.html',
-    styleUrl: './weekly-report.component.css'
+    styleUrl: './weekly-report.component.css',
+    styles: [
+        `:host ::ng-deep  .p-frozen-column {
+            font-weight: bold;
+        }
+        :host ::ng-deep .p-datatable-frozen-tbody {
+            font-weight: bold;
+        }`
+    ],
   })
 
 export class  SalesReportByItemComponent {
 
   //objSearch!: searchRequest[];
   //selectedCities!: City[];
+  chartdata!: objChartData;
+  chartdatasets!: objChartDatasets[];
+  dynamicBGColor!:string;
+  dynamicBorderColor!:string;
+
+  ChartData: any;
+  ChartOptions: any;
 
   billDate1 = new FormControl(new Date());
   billDate2 = new FormControl(new Date());
@@ -75,12 +105,14 @@ export class  SalesReportByItemComponent {
   selectedItem: string = 'all';
   objAreas!: Areas[];
   selectedAreas!:Areas[];
+  selectedItems!:any[];
   objShops!: Areas[];
   objItems!: any[];
   totalShops:any = 0;
   date1:any;
   date2:any;
   form!: FormGroup;
+  submitting0:boolean = false;
   submitting1:boolean = false;
   submitting2:boolean = false;
   submitting3:boolean = false;
@@ -116,7 +148,7 @@ export class  SalesReportByItemComponent {
   exportColumns22!: ExportColumn[];
 
   ngOnInit(): void {
-
+   //this.BindChartData(this.chartdata);
    this.bindAreasList('lines');
    //this.bindShopNames(this.selectedArea);
    this.bindItemNames('all','all');
@@ -131,6 +163,162 @@ export class  SalesReportByItemComponent {
   //get frmReport() { return this.form.controls; }
 
   ngAfterViewInit() {  }
+
+  generateChartDataFromDataTable()
+  {
+    this.dataTable = JSON.parse(this.dataSource);
+    //const obj = JSON.parse(this.dataSource);
+    //this.dataTable = Object.values(obj);
+
+    this.chartdatasets = [];
+    this.dynamicColumns = Object.keys(this.dataTable[0]);
+    let coldata : string[];
+    let colname : string;
+    let categories:string[];
+    let varChartdataset : objChartDatasets;
+    categories = [];
+    console.log('this.dynamicColumns.length',this.dynamicColumns.length)
+    for(var col=2;col<this.dynamicColumns.length;col++){
+        coldata = [];
+        categories = [];
+        for(var item in this.dataTable){
+          categories.push(this.dataTable[item]["NAME"]);
+          colname = this.dynamicColumns[col];
+          coldata.push(this.dataTable[item][colname])
+          //console.log('Dynamic table rows =', this.dataTable[item][row]); //is working
+        }
+        this.getRandomRGB();
+        varChartdataset = {label:this.dynamicColumns[col],data:coldata,borderColor:this.dynamicBorderColor,backgroundColor:this.dynamicBGColor}
+        this.chartdatasets.push(varChartdataset);
+      }
+    this.chartdata = {labels:categories,datasets:this.chartdatasets};
+    console.log('Chart datasets =', this.chartdata);
+    this.BindChartData(this.chartdata);
+    
+      //<td *ngFor="let item of row | keyvalue">{{item.value}}</td>
+    //for(let row=0;row<this.dataTable.length;row++){      
+  }
+  getRandomRGB() {
+  const r = Math.floor(Math.random() * 256);  // Red (0–255)
+  const g = Math.floor(Math.random() * 256);  // Green (0–255)
+  const b = Math.floor(Math.random() * 256);  // Blue (0–255)
+  const op = 1;
+  //return `rgb(${r}, ${g}, ${b},1)`;
+  this.dynamicBorderColor = `rgb(${r}, ${g}, ${b})`;
+  this.dynamicBGColor=`rgba(${r}, ${g}, ${b},${op})`;
+  console.log('getRandomRGB called.',this.dynamicBorderColor)
+}
+
+
+  BindChartData(varChartdata:objChartData) {
+    const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+        // this.ChartData = {
+        //     labels: ['BISCUITES', 'CAKES', 'CHOCOLATES', 'COOL DRINKS', 'ECLAIRS', 'JAM', 'NAMKEEN','SOAPS','SWEETS','WAFFERS'],
+        //     datasets: [
+        //         {
+        //             label: 'Weel1',
+        //             // backgroundColor: documentStyle.getPropertyValue('--blue-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--blue-500'),
+        //             data: [65, 59, 80, 81, 56, 55, 40,23,32,51]
+        //         },
+        //         {
+        //             label: 'Week2',
+        //             // backgroundColor: documentStyle.getPropertyValue('--pink-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--pink-200'),
+        //             data: [28, 48, 40, 19, 86, 27, 90,32,55,11]
+        //         },
+        //         {
+        //             label: 'Week3',
+        //             // backgroundColor: documentStyle.getPropertyValue('--red-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--red-500'),
+        //             data: [12, 33, 44, 5, 81, 44, 66,23,44,11]
+        //         },
+        //         {
+        //             label: 'Week4',
+        //             // backgroundColor: documentStyle.getPropertyValue('--green-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--green-500'),
+        //             data: [28, 48, 40, 19, 86, 27, 90,32,55,22]
+        //         },
+        //         {
+        //             label: 'Week5',
+        //             // backgroundColor: documentStyle.getPropertyValue('--green-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--purple-500'),
+        //             data: [28, 48, 40, 19, 86, 27, 89,23,87,44]
+        //         },
+        //         {
+        //             label: 'Week6',
+        //             // backgroundColor: documentStyle.getPropertyValue('--green-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--mustered-500'),
+        //             data: [28, 48, 40, 19, 86, 27, 90,23,45,11]
+        //         },
+        //         {
+        //             label: 'Week7',
+        //             // backgroundColor: documentStyle.getPropertyValue('--green-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--yellow-500'),
+        //             data: [28, 48, 40, 19, 86, 27, 90,42,55,66]
+        //         },
+        //         {
+        //             label: 'Week8',
+        //             // backgroundColor: documentStyle.getPropertyValue('--green-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--cyan-500'),
+        //             data: [28, 48, 40, 19, 86, 27, 90,80,77,44]
+        //         },
+        //         {
+        //             label: 'Week9',
+        //             // backgroundColor: documentStyle.getPropertyValue('--green-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--orange-500'),
+        //             data: [28, 48, 40, 19, 86, 27, 90,22,99,88]
+        //         },
+        //         {
+        //             label: 'Week10',
+        //             // backgroundColor: documentStyle.getPropertyValue('--green-500'),
+        //             // borderColor: documentStyle.getPropertyValue('--voilet-500'),
+        //             data: [28, 48, 40, 19, 86, 27, 88,22,44,99]
+        //         }
+        //     ]
+        // };
+        this.ChartData = varChartdata;
+
+        this.ChartOptions = {
+            maintainAspectRatio: false,
+            aspectRatio: 0.8,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColor
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: textColorSecondary,
+                        font: {
+                            weight: 500
+                        }
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: textColorSecondary
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false
+                    }
+                }
+
+            }
+        };
+  }
 
   formateMyDate(params:any) {
     return params.value.format('MM/DD/YYYY HH:mm');
@@ -170,14 +358,66 @@ export class  SalesReportByItemComponent {
     }
     return this.selectedArea;
   }
-  ViewReturnPercentage(strType:any) {
-    if (!this.selectedAreas || this.selectedAreas.length == 0)
+
+  getSelectedItemNames()
+  {
+    //alert(this.selectedItems);
+    this.selectedItem = 'all';
+    if (this.selectedItems)
+    {
+      if (this.selectedItems.length == this.objItems.length)
       {
-          alert('Please select one or few Line Name(s) for better result.');
-          return;
+        //alert('all areas selected');
+        this.selectedItem = 'all';
       }
+      else{
+        console.log('selectedItems.length= ',this.selectedItems.length)
+        for(var item in this.selectedItems)
+          {
+            console.log('item = ', item);
+            console.log(this.selectedItems[item].ItemName);
+            if (item == "0")
+            {
+              this.selectedItem = '[' + this.selectedItems[item].ItemName + ']';
+            }
+            else
+            {
+              this.selectedItem = this.selectedItem + ',' + '[' + this.selectedItems[item].ItemName + ']';
+            }
+          }
+        }
+    }
+    else
+    {
+      this.selectedItem = 'all';
+    }
+    console.log("selected ItemNames : ",this.selectedItem);
+    //return this.selectedItem;
+  }
+  ViewReturnPercentage(strType:any) {
+    //return;
+    if (!this.selectedAreas || this.selectedAreas.length == 0)
+    {
+        alert('Please select one or few Line Name(s) for better result.');
+        return;
+    }
+    else
+    {
+      console.log('this.selectedAreas',this.selectedAreas)
+      if (this.selectedAreas.length == this.objAreas.length)
+        {
+          this.selectedArea = 'all';
+        }
+    }
     this.selectedReportName = 'Weeek wise returns Percentage(%)';
     this.submitting4 = true;
+    this.showGrid2 = false;
+    this.showHideGrid = "none";
+    this.ViewClicked(strType);
+  }
+  ViewWeekWiseAreaClicked(strType:any) {
+    this.selectedReportName = 'Week Wise by Area';
+    this.submitting0 = true;
     this.showGrid2 = false;
     this.showHideGrid = "none";
     this.ViewClicked(strType);
@@ -188,7 +428,6 @@ export class  SalesReportByItemComponent {
     this.showGrid2 = false;
     this.showHideGrid = "none";
     this.ViewClicked(strType);
-
   }
   ViewByShopClicked(strType:any) {
     this.selectedReportName = 'View by Shop';
@@ -215,6 +454,8 @@ export class  SalesReportByItemComponent {
   }
   ViewByDateClicked(strType:any) {
     this.selectedReportName = 'View by Date';
+    //console.log ('selected Area/Line = ',this.selectedAreas);
+    //alert(this.selectedItems);
     if (this.selectedItem == '' || this.selectedItem == 'all')
     {
       alert('Please select Item name and click View by Date.');
@@ -309,10 +550,17 @@ export class  SalesReportByItemComponent {
 
   ViewClicked(strType:any) {
     this.grandTotalQty = 0;
-    var totalQty:any;
-    //console.log('selected areas',this.selectedAreas);
+    var totalQty:number;
     //alert(this.selectedAreas.length);
+    this.getSelectedItemNames();
+    console.log('selected Item names',this.selectedItem);
     this.selectedArea = 'all';
+    if (strType === 'returns' && this.selectedArea === 'all' && this.selectedItem === 'all')
+    {
+        alert('You have selected All Lines and All Items, this will take long time to get result, Please select few Lines or few Item Names and try.');
+        this.HideLoader('all');
+        return;
+    }
     if (this.selectedAreas)
     {
       if (this.selectedAreas.length == this.objAreas.length)
@@ -343,7 +591,7 @@ export class  SalesReportByItemComponent {
     if (strType == 'byarea')
     {
        console.log('calling bindShopNames',this.selectedArea);
-       this.bindShopNames(this.selectedArea);
+       //this.bindShopNames(this.selectedArea);
     }
 
     //this.date1 = this.range.controls.start.value;
@@ -363,13 +611,14 @@ export class  SalesReportByItemComponent {
       var objSearchVal = {
         reporttype: strType, area: this.selectedArea, shop: this.selectedShop,itemname:this.selectedItem,date1:this.date1,date2:this.date2
       };
-      //console.log('request =', objSearchVal);
+      console.log('request payload =', objSearchVal);
       //this.sharedService.getBellWeeklyReportNew(strType,this.selectedArea,this.selectedShop,this.selectedItem,this.date1,this.date2).subscribe((response: any[]) => {
         this.sharedService.getBellWeeklyReportNew(objSearchVal).subscribe((response: any[]) => {
       //console.log('response=', response);
       //if (response === null ) {return;}
       if (!response) {
         //console.log('request if null =', response);
+         this.submitting0 = false;
          this.submitting1 = false;
          this.submitting2 = false;
          this.submitting3 = false;
@@ -380,7 +629,7 @@ export class  SalesReportByItemComponent {
       {
           this.dataSource = <any>response;
           this.dataTable = this.filteredItems = JSON.parse(this.dataSource);
-          //console.log('response = ', this.dataTable);
+          console.log('response = ', this.filteredItems);
           //const obj = JSON.parse(this.dataSource);
           //this.dataTable = Object.values(obj);
           this.dynamicColumns = Object.keys(this.dataTable[0]);
@@ -388,16 +637,17 @@ export class  SalesReportByItemComponent {
           let newCol:any;
           this.cols = [];
           for(var item in this.dynamicColumns){
-            if(this.dynamicColumns[item] == 'SHOPNAME' || this.dynamicColumns[item] == 'AREA')
-              newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:true};
+            if(this.dynamicColumns[item] == 'SHOPNAME' || this.dynamicColumns[item] == 'AREA' ) //|| this.dynamicColumns[item] == 'NAME'
+              newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:true,isFrozen:'pFrozenColumn'};
             else
-              newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:false};
+              newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:false,isFrozen:''};
             //console.log('newcol=',newCol);
             this.cols.push(newCol);
           }
+          //this.generateChartDataFromDataTable();
 
           //To show Total Qty count for only if all Area selected.
-          if (strType =='byarea') //this.selectedArea == 'all'
+          if (strType =='byarea' || strType == 'weekwisebyarea') //this.selectedArea == 'all'
           {
             newCol = {field:"TOTAL",header:"TOTAL",customExportHeader:"TOTAL",isFrozenColumn:false};
             this.cols.push(newCol);
@@ -410,9 +660,9 @@ export class  SalesReportByItemComponent {
               for(var col in this.dynamicColumns)
               {
                 //console.log('this.dynamicColumns[col]', this.dynamicColumns[col]);
-                if( this.dynamicColumns[col] != 'SNO.' && this.dynamicColumns[col] != 'AREA' && this.dynamicColumns[col] != 'ITEMNAME' && this.dynamicColumns[col] != 'NAME')
+                if( this.dynamicColumns[col] != 'SNO.' && this.dynamicColumns[col] != 'AREA' && this.dynamicColumns[col] !='ITEMCODE' && this.dynamicColumns[col] != 'ITEMNAME' && this.dynamicColumns[col] != 'NAME')
                 {
-                  totalQty = totalQty + this.filteredItems[row][this.dynamicColumns[col]];
+                  totalQty = totalQty + Number(this.filteredItems[row][this.dynamicColumns[col]]);
                   //totalQty = totalQty + Number(this.dataTable[row][col]);
                   //console.log('loop through rows & cols : ',this.dataTable[row][this.dynamicColumns[col]]);
                 }
@@ -446,17 +696,29 @@ export class  SalesReportByItemComponent {
           //console.log('column names from loop =',this.cols);
           //console.log('datasource =',this.filteredItems);
       }
+      this.HideLoader('all');
+         //console.log('Column names =',this.dynamicColumns);
+     },
+     (err: any) => console.log('Error occured in sales-report-byitem at ViewClicked()',err),
+     () => this.HideLoader(strType));
+  }
+
+formatCurrency(value: number) {
+        return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    }
+  
+    HideLoader(strReportName:any)
+  {
+      this.submitting0 = false;
       this.submitting1 = false;
       this.submitting2 = false;
       this.submitting3 = false;
       this.submitting4 = false;
-         //console.log('Column names =',this.dynamicColumns);
-     },
-     (err: any) => console.log(err),
-     () => console.log('Error occured in sales-report-byitem at ViewClicked() '));
-     //this.submitting = false;
+      // if (strReportName==='returns')
+      // {
+      //   this.submitting4 = false;
+      // }
   }
-
   //clickedRows = new Set<IRow>();
   showItemsByCustID(rowItem:any)
   {
@@ -490,7 +752,7 @@ bindAreasList(strArea:string)
   {
     this.sharedService.getBellAreas(strArea,'n','n').subscribe((response: Areas[]) => {
       this.objAreas = response;
-      //console.log(response);
+      console.log(response);
     },
     (err: any) => console.log(err),
     () => console.log('BindAreasList() retrieved Areas'));
@@ -504,7 +766,7 @@ bindItemNames(areaName:string,shopName:string)
     this.date2 = formatDate(this.date2,'dd-MMM-yyyy','en-US');
     this.sharedService.getBellItems('all','all',this.date1,this.date2).subscribe((response: any[]) => {
       this.objItems = response;
-      //console.log('All Items:',response);
+      console.log('All Items:',response);
     },
     (err: any) => console.log(err),
     () => console.log('getItems() retrieved Items'));

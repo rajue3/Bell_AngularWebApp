@@ -17,6 +17,7 @@ import { UpdatePRateComponent } from './stock-report/update-prate.component';
 
 import { AppComponent } from './app.component';
 import { DemoComponent } from './demo/demo.component';
+//import { TableFrozenColumnsDemo } from './demo/table-frozen-columns-demo';
 import { HeaderComponent } from './header/header.component';
 import { AdminComponent } from './customer/customer.component';
 import { CustomOrdersComponent } from './orders/orders.component';
@@ -79,6 +80,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { CalendarModule } from 'primeng/calendar';
 import { InputText, InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -104,7 +106,7 @@ import { TagModule } from 'primeng/tag';
     CurrencyPipe,
     TableModule,InputTextModule,TagModule,
     IconFieldModule,InputIconModule,DropdownModule,FormsModule,MultiSelectModule,CardModule,
-    ButtonModule,ToastModule,RippleModule,AvatarModule,CalendarModule,
+    ButtonModule,ToastModule,RippleModule,AvatarModule,CalendarModule,ChartModule,
   ],
   providers: [SharedService, provideAnimationsAsync(),provideNativeDateAdapter(),
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

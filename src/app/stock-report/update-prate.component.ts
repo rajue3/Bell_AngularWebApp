@@ -78,7 +78,7 @@ export class UpdatePRateComponent {
   selectedTransType:string='all';
   selectedUser:string='all';
   objUsers!: Areas[];
-
+  varTotalStock: number = 0;
   showGrid1:boolean = false;
   showGrid2:boolean = false;
   cols!: Column[];
@@ -198,8 +198,13 @@ onRowEditSave(product: ItemDetails) {
           ItemCode: product.ItemCode,
           PRate: product.PRate,
           MinOrderAlert:product.MinOrderAlert,
+          Cartons: product.Cartons,Packets:product.Packets,
+          Stock: Number(product.Cartons) * Number(product.TOTALITEMSINPACK) + Number(product.Packets),
           USERNAME: 'WEB ' + (loginUserName ?? 'Admin')
         };
+        this.varTotalStock = Number(product.Cartons) * Number(product.TOTALITEMSINPACK) + Number(product.Packets);
+        product.STOCK = this.varTotalStock;
+        console.log('edited row values=',objUpatedRowItem);
         this.sharedService.UpdatePurchaseRateMinOrder(objUpatedRowItem).subscribe((response: any) => {
           console.log('Purchase Rate update response :', response);
           this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Item is updated' });
@@ -218,38 +223,6 @@ onRowEditCancel(product: ItemDetails, index: number) {
     delete this.clonedProducts[product.ItemCode as string];
 }
 
-  ViewOutofStockItemsClicked(strOption: any) {
-    this.showGrid1 = true;
-    this.showGrid2 = false;
-    this.sharedService.GetStockDetails(strOption,this.selectedCategory).subscribe((response: ItemDetails[]) => {
-      //this.dataSource = response;
-      this.dataSource = this.filteredItems = response;
-      this.dataSource2 = <any>response;
-      console.log('received items :',this.filteredItems)
-      this.reportHeader = "Total Items " + this.filteredItems.length;
-      this.reportName = 'Report :: View outof Stock Items';
-      sessionStorage.setItem('Report5_DataSource', JSON.stringify(this.filteredItems));      
-      if (this.dataSource.length == 0) { this.submitting1 = false; }
-
-      this.cols = [
-        { field: 'ItemCode', header: 'ItemCode', customExportHeader: 'Item Code' },
-        { field: 'ItemName', header: 'ItemName', customExportHeader: 'Item Name' },
-        { field: 'CATEGORY', header: 'CATEGORY', customExportHeader: 'Category' },
-        { field: 'MRP', header: 'MRP' },
-        { field: 'Rate', header: 'Rate' },
-        { field: 'Description', header: 'Description', customExportHeader: 'Min Order Alert' },
-        { field: 'Qty', header: 'Qty', customExportHeader: 'Stock in Box'},
-        { field: 'STOCK', header: 'STOCK', customExportHeader:'Packets' }
-      ];
-      this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
-
-      console.log('EXPORT column names from loop =',this.exportColumns);
-      this.submitting1 = false;
-      console.log('exportColumns Details :', this.dynamicColumns);
-    },
-      (err: any) => console.log('Error occured at ViewOutofStockItemsClicked :',err),
-      () => this.submitting1 = false);
-  }
   
   ViewAllItemsClicked(strOption: any) {   
     this.showGrid1 = true;
@@ -259,75 +232,36 @@ onRowEditCancel(product: ItemDetails, index: number) {
     this.submitting2 = true;    
     this.submitting3 = false;    
     
+    //to get all Master Item details
     this.sharedService.GetStockDetails(strOption,this.selectedCategory).subscribe((response: ItemDetails[]) => {
-      //this.dataSource = response;
-      this.dataSource = this.filteredItems = response;
+      //this.dataSource = response;      
+      console.log('ViewAllItems :',response);
+      //console.log('selected Itemtype: ',this.selectedTransType);
+      if (this.selectedTransType == 'all')
+      {  this.dataSource = this.filteredItems = response; }
+      else
+      { this.dataSource = this.filteredItems = this.filterDataByItemType(response,this.selectedTransType);}
+
       this.reportHeader = "Total Items " + this.filteredItems.length;
       this.reportName = 'View All Items';
       if (this.dataSource.length == 0) { this.submitting2 = false; }
       //sessionStorage.setItem('Report5_DataSource', JSON.stringify(this.filteredItems));
-      //console.log('ViewAllItems Stock Details :',response);
       this.cols = [
         { field: 'ItemCode', header: 'ItemCode', customExportHeader: 'Item Code' },
         { field: 'ItemName', header: 'ItemName', customExportHeader: 'Item Name' },
-        { field: 'CATEGORY', header: 'CATEGORY', customExportHeader: 'Category' },
-        { field: 'MRP', header: 'MRP' },
+        { field: 'Category', header: 'CATEGORY', customExportHeader: 'Category' },
+        { field: 'Manufacture', header: 'Manufacture', customExportHeader: 'Manufacture' },
+        //{ field: 'STOCK', header: 'STOCK', customExportHeader: 'STOCK' },
+        { field: 'PRATE', header: 'PRATE' },
         { field: 'Rate', header: 'Rate' },
-        { field: 'Description', header: 'Description', customExportHeader: 'Min Order Alert' },
-        { field: 'Qty', header: 'Qty', customExportHeader: 'Stock in Box'},
-        { field: 'STOCK', header: 'STOCK', customExportHeader:'Packets' }
       ];
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
     },
       (err: any) => console.log('Error occured at ViewAllItemsClicked:',err),
       () => this.submitting2 = false);    
-  }
-
-  //this is to get all StockEntries using given filters.
-  ViewRawMaterialsUsageClicked(strOption:any) {
-
-    //alert(formatDate(this.pFromDate,'dd-MMM-yyyy','en-US'));
-    this.showGrid1 = false;
-    this.showGrid2 = true;
-    this.submitting1 = false;    
-    this.submitting2 = false;    
-    this.submitting3 = true;   
-    //this.date1 = this.billDate1.value;
-    this.date1 = formatDate(this.pFromDate,'dd-MMM-yyyy','en-US');
-    this.date2 = this.billDate2.value;
-    this.date2 = formatDate(this.pToDate,'dd-MMM-yyyy','en-US');
-    sessionStorage.setItem('billDate1',JSON.stringify(this.date1));
-    sessionStorage.setItem('billDate2',JSON.stringify(this.date2));
-
-    this.sharedService.GetStockTransactions(this.selectedCategory,this.selectedTransType,this.date1,this.date2,this.selectedUser).subscribe((response: any[]) => {
-      //this.dataSource = response;
-      this.dataSource2 = <any>response;
-      this.dataTable = this.filteredItems = JSON.parse(this.dataSource2);
-      this.reportHeader = "Total Items " + this.dataTable.length;
-      this.reportName = 'Stock Entries : ' + this.selectedTransType;      
-      console.log('Stock Transactions this.dataTable[0]:',this.dataTable[0]);
-
-      this.dynamicColumns = Object.keys(this.dataTable[0]);
-      let newCol:any;
-      this.cols = [];
-      console.log('this.dataTable.length :',this.dataTable.length)
-      if (this.dataTable.length == 0) { this.submitting3 = false; }
-      for(var item in this.dynamicColumns){
-        if(this.dynamicColumns[item] == 'ITEMNAME')
-          newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:true};
-        else
-          newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:false};
-        //console.log('newcol=',newCol);
-        this.cols.push(newCol);
-      }
-      this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
-      //console.log('eXPORT column names from loop =',this.exportColumns);
-      //this.submitting3 = false;
-    },
-      (err: any) => console.log('Error occured at ViewRawMaterialsUsageClicked:',err),
-      () => this.submitting3 = false   );
-    //this.submitting3 = false;
   }  
+  
+  filterDataByItemType(data: any[], ItemType: string): any[] { return data.filter(item => item.Manufacture === ItemType); }
 
   formatFieldValue(colHeader:any,colValue:any)
    {

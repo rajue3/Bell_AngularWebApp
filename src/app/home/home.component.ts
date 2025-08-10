@@ -23,6 +23,8 @@ export class HomeComponent implements OnInit{
       //this.messageService.add({ severity: 'warn', summary: 'Alert', detail: 'Stock is low...' });
   }
     logout() {
+      sessionStorage.clear();
+      localStorage.clear();
       this.accountService.logout();
     }
   show() {

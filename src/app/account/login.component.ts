@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
           .subscribe((response: any) => {
             //alert(response);
             //console.log(response);
-            this.user = response;
+            this.user = response;            
             if (this.user.id > 0)
             {
               this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Login successful...' });

@@ -41,35 +41,35 @@ export class SharedService {
     //alert(this.APIUrl + 'bell/GetLSItemsByDate/' + strType + '/' + date1 +'/'+ date2);
     return this.http.get<any>(this.APIUrl + 'bell/GetWeeklySales/' + strArea + '/' + date1 );
   }
-  GetSaleItemsbyBillDate(strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
-    //return this.http.get<any>(this.APIUrl + 'bell/GetSaleItemsbyBillDate/' + strArea + '/' + shop.replace('/','@') + '/' + date1+ '/' + date2 );
+  GetSaleItemsbyBillDate(strLine:string,strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
+    //return this.http.get<any>(this.APIUrl + 'bell/GetSaleItemsbyBillDate/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
     //USP_ITEMS_WISE_SALES_COUNT_BY_BILLDATE
-    return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/ITEMWISE/' + strArea + '/' + shop.replace('/','@') + '/' + date1+ '/' + date2 );
+    return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/ITEMWISE/' + strLine + '/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
     //USP_ITEMS_WISE_SALES_COUNT_BY_BILLDATE
   }
-  GetSalebyShopsBillDateWithBillNo(strReportType:string,strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
+  GetSalebyShopsBillDateWithBillNo(strReportType:string,strLine:string,strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
     //SHOPWISEWITHBILL
     //SHOPWISEWITHOUTBILL
     //alert(date1 + '-' + date2);
-    console.log('GetSalebyShopsBillDateWithBillNo URL:',this.APIUrl + 'bell/GetSalebyShopsBillDate/' + strReportType + '/' + strArea + '/' + shop.replace('/','@') + '/' + date1+ '/' + date2 );
-    return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/' + strReportType + '/' + strArea + '/' + shop.replace('/','@') + '/' + date1+ '/' + date2 );
+    console.log('GetSalebyShopsBillDateWithBillNo URL:',this.APIUrl + 'bell/GetSalebyShopsBillDate/' + strReportType + '/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
+    return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/' + strReportType + '/' + strLine + '/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
     //USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE
   }
   GetSalebyShopsBillDate(strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
     //alert(date1 + '-' + date2);
     //alert(this.APIUrl + 'bell/GetLSItemsByDate/' + strType + '/' + date1 +'/'+ date2);
-    return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/SHOPWISE/' + strArea + '/' + shop.replace('/','@') + '/' + date1+ '/' + date2 );
+    return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/SHOPWISE/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
     //USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE
   }
-  GetSalebyBillNumber(strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
-    return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/BILLWISE/' + strArea + '/' + shop.replace('/','@') + '/' + date1+ '/' + date2 );
+  GetSalebyBillNumber(strLine:string,strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
+    return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/BILLWISE/' + strLine + '/'+ strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
     //BELL_SHOP_WISE_SALES_BY_BILLNUMBER
   }
 
   GetInactiveShops(strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
     //alert(date1 + '-' + date2);
     //alert(this.APIUrl + 'bell/GetLSItemsByDate/' + strType + '/' + date1 +'/'+ date2);
-    return this.http.get<any>(this.APIUrl + 'bell/GetInactiveShops/' + strArea + '/' + shop.replace('/','@') + '/' + date1+ '/' + date2 );
+    return this.http.get<any>(this.APIUrl + 'bell/GetInactiveShops/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
     //BELL_GET_INACTIVE_SHOPS
     //USP_WEEKLY_SALE_ITEMS_COUNT
   }
@@ -88,8 +88,8 @@ export class SharedService {
     //alert(this.APIUrl + 'bell/GetLSItemsByDate/' + strType + '/' + date1 +'/'+ date2);
     return this.http.get<any>(this.APIUrl + 'bell/GetMonthlySalesByItems/' + strArea + '/' + date1 );
   }
-  getBellItemsbyAreaDate(Area:any,billdate:any): Observable<any[]> {
-    return this.http.get<any>(this.APIUrl + 'bell/GetLSItemsByAreaDate/' + Area + '/' + billdate );
+  getBellItemsbyAreaDate(Report:any,Area:any,Shop:any,billdate:any): Observable<any[]> {
+    return this.http.get<any>(this.APIUrl + 'bell/GetLSItemsByAreaDate/' + Report + '/'+ Area + '/' + Shop.replace(/\//g,'@').replace(/&/g,'$') + '/' + billdate );
     //BELL_GET_LS_ItemsByArea_Date
   }
   getLSTotalSalesByArea(strArea:string,date1:any,date2:any): Observable<any[]> {
@@ -99,30 +99,39 @@ export class SharedService {
     return this.http.get<any>(this.APIUrl + 'bell/GetLSTotalSalesByArea_New/' + strArea + '/' + date1 +'/'+ date2);
     //BELL_GET_TOTAL_SALES_BY_AREA_NEW
   }
-  GetTotalSalesByShop(strArea:string,shop:string,date1:any,date2:any,totalamount:any): Observable<any[]> {
+  GetTotalSalesByShop(strLine:string,strArea:string,shop:string,date1:any,date2:any,totalamount:any): Observable<any[]> {
     //alert('total amount :' + totalamount);
     //alert(this.APIUrl + 'bell/GetLSItemsByDate/' + strType + '/' + date1 +'/'+ date2);
     //return this.http.get<any>(this.APIUrl + 'bell/GetLSItemsByDate/' + strType + '/' + date1 +'/'+ date2);
-    return this.http.get<any>(this.APIUrl + 'bell/GetTotalSalesByShop/' + strArea +'/'+ shop.replace('/','@') + '/' + date1 +'/'+ date2 +'/'+ totalamount);
+    return this.http.get<any>(this.APIUrl + 'bell/GetTotalSalesByShop/' + strLine +'/' + strArea +'/'+ shop.replace(/\//g,'@') + '/' + date1 +'/'+ date2 +'/'+ totalamount);
     //BELL_SHOP_WISE_TOTAL_SALES
   }
+  // GetStockDetails(strOption:any,strCategory:any): Observable<any[]> {
+  //   return this.http.get<any>(this.APIUrl + 'bell/GetStockDetails/' + strOption + '/' + strCategory);
+  //   //BELL_STOCK_DETAILS
+  // }
   GetStockDetails(strOption:any,strCategory:any): Observable<any[]> {
     return this.http.get<any>(this.APIUrl + 'bell/GetStockDetails/' + strOption + '/' + strCategory);
     //BELL_STOCK_DETAILS
   }    
+  GetPendingOrders(strOption1:any,strOption2:any): Observable<any[]> {
+    return this.http.get<any>(this.APIUrl + 'bell/GetPendingOrders/' + strOption1 + '/' + strOption2);
+    //BELL_GET_PENDING_ORDERS
+  }      
   GetStockTransactions(strCategory:string,strTransType:string,date1:any,date2:any,selectedUser:string): Observable<any[]> {
-    return this.http.get<any>(this.APIUrl + 'bell/GetStockTransactions/' + strCategory + '/' + strTransType.replace('/','@') + '/' + date1+ '/' + date2+'/'+selectedUser );
+    return this.http.get<any>(this.APIUrl + 'bell/GetStockTransactions/' + strCategory + '/' + strTransType.replace(/\//g,'@') + '/' + date1+ '/' + date2+'/'+selectedUser );
     //BELL_GET_STOCK_TRANSACTIONS
   }  
   UpdatePurchaseRateMinOrder(objDetails: any) {
     //alert(this.APIUrl + 'UpdateOrderStatus');
     return this.http.post(this.APIUrl + 'bell/UpdatedPurchareRateMinOrder', objDetails);
-  }
+  } //BELL_UPD_ITEMS_PRATE_MINORDER
+  
   getBellAreas(strType:string,date1:any,date2:any): Observable<any[]> {
     console.log('Binding shops from Bell_GetAreaList ', `${this.APIUrl}bell/Bell_GetAreaList/` + strType + '/' + date1 +'/'+ date2);
     //return this.http.get<any>(this.APIUrl + 'GetAllOrdersByStatus/' + strStatus);
     //return this.http.get<any>(this.APIUrl + 'bell/Bell_GetAreaList/' + strType);
-    return this.http.get<any>(`${this.APIUrl}bell/Bell_GetAreaList/` + strType + '/' + date1 +'/'+ date2);
+    return this.http.get<any>(`${this.APIUrl}bell/Bell_GetAreaList/` + strType + '/' + date1 +'/'+ date2);    
     //USP_GET_AREALIST
   }
   

@@ -32,10 +32,14 @@
     </div>
       <div class="col-sm-6">
       <label class="form-label">Item Name</label><br/>
-      <select [(ngModel)]="selectedItem" name="matShop" style="width: 220px;height: 25px;">
+      <p-multiSelect
+            filter="false" [options]="objItems" [(ngModel)]="selectedItems" optionLabel="ItemName"
+            (onClick)="selectedItems" placeholder="Select Item" (onChange)="getSelectedItemNames()"/>
+            
+      <!-- <select [(ngModel)]="selectedItem" name="matShop" style="width: 220px;height: 25px;">
       <option value="all" >--All--</option>
       <option *ngFor="let item of objItems" value={{item.ItemName}} > {{item.ItemName}} </option>
-    </select>
+    </select> -->
     </div>
   </div>
 
@@ -62,6 +66,9 @@
   <div class="row">
     <div class="col-sm-12" style="vertical-align: bottom;align-items: baseline;">
         <br/>
+        <button class="btn btn-primary" style="border-color: red;" (click)="ViewWeekWiseAreaClicked('weekwisebyarea')">
+          <span *ngIf="submitting0" class="spinner-border spinner-border-sm me-1"></span>
+          Week Wise View by Area&nbsp;&nbsp;</button>&nbsp;&nbsp;
         <button class="btn btn-primary" (click)="ViewByAreaClicked('byarea')">
           <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
           View by Area&nbsp;&nbsp;</button>&nbsp;&nbsp;
@@ -82,24 +89,31 @@
 </div>
 <div style="text-align: center;" class="form-control">
   <h5><b>{{ selectedReportName }} &nbsp; | </b> Shop Name selected : <b> {{selectedShop}} </b> :: Total Shops in <b>{{selectedArea}}</b> Lines = <b> {{filteredItems.length || 0}} / {{totalShops}} </b>
+    <br/>
+    <b>Selected Items : {{selectedItem}}</b>
     <span style="color:red;font-weight:bold;"> | Total Qty: {{grandTotalQty}} </span> </h5>
 </div>
-<div class="card" style="background: #0000000e;">
+<div class="card" >
 
-  <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="500px"
+  <!-- <div class="card" style="background: #0000000e;">
+      <p-chart type="bar" [data]="ChartData" [options]="ChartOptions" />
+  </div> -->
+
+  <!-- <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="500px"
         dataKey="id" [rows]="10" selectionMode="single" [columns]="cols"
         [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="false" paginatorPosition="top"
-        [exportHeader]="'customExportHeader'"
-        >
+        [exportHeader]="'customExportHeader'" > -->
+  <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="400px" styleClass="mt-3"  [columns]="cols">
       <ng-template pTemplate="header" let-columns>
          <tr>
-          <th class="table-th" style="min-width:100px" *ngFor="let col of columns"
-            pFrozenColumn [frozen]="col.isFrozenColumn" >{{col.header}}</th>
+          <th style="min-width:100px" *ngFor="let col of columns" alignFrozen="left"
+             pFrozenColumn [frozen]="col.isFrozenColumn">{{col.header}}</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
           <tr>
-            <td class="table-tr" style="border: 1px solid black;" *ngFor="let col of columns" pFrozenColumn [frozen]="col?.isFrozenColumn">
+            <td  style="border: 1px solid black;" *ngFor="let col of columns" alignFrozen="left"
+            pFrozenColumn [frozen]="col.isFrozenColumn">
               {{rowData[col.field] || ''}}
             </td>
           </tr>
@@ -151,8 +165,9 @@
             <td colspan="5"><h3 style="text-align: center;color: red;"><b>No data found.</b></h3></td>
         </tr>
     </ng-template>
-  </p-table>
+  </p-table> 
 </div>
+
 </div>
 
 <!-- <div class="ag-theme-balham" style="width: 100%; height: 100%;">

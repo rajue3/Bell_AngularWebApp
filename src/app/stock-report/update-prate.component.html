@@ -4,17 +4,28 @@
 <div class="card">
     <p-toast></p-toast>
     <div class="row">        
-      <div class="col-sm-6" style="vertical-align: bottom;align-items: baseline;">
+      <div class="col-sm-2">
         <label class="form-label" style="color: blue;"> Category </label>&nbsp;&nbsp;
         <p-multiSelect display="chip" placeholder="Loading..." 
             filter="false" [options]="objCategories" [(ngModel)]="selectedCategories" optionLabel="Line"
             (onClick)="selectedCategories" placeholder="Select Category(s)" (onChange)="getselectedCategories()"/>        
-            &nbsp;&nbsp;<button class="btn btn-primary" (click)="ViewAllItemsClicked('all')">
-                <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
-                View All Items </button>&nbsp;&nbsp;      
-        </div>    
-      
+            
+        </div>            
+        
+        <div class="col-sm-4">
+          <label class="form-label" style="color: blue;">Item Type </label>&nbsp;&nbsp;
+          <select [(ngModel)]="selectedTransType" name="itemstype" style="width: 220px;height: 25px;">
+            <option value="all">--All--</option>
+            <option value="Bell">Bell Brand</option>
+            <option value="Trade">Trading</option>
+            <option value="Krupa">Krupa</option>
+          </select>
+          &nbsp;&nbsp;<button class="btn btn-primary" (click)="ViewAllItemsClicked('all')">
+          <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
+          View All Items </button>&nbsp;&nbsp;      
+        </div>
     </div>
+    
     
 <div class="row">&nbsp;</div>
   <div class="row">
@@ -32,13 +43,18 @@
           [exportHeader]="'customExportHeader'">
         <ng-template pTemplate="header">
            <tr>
-            <th class="table-th" style="width: 10%;">Item Code</th>
-            <th class="table-th" style="width: 25%;">Item Name</th>
+            <th class="table-th" style="width: 7%;">Item Code</th>
+            <th class="table-th" style="width: 20%;">Item Name</th>
             <th class="table-th" style="width: 15%;">Category</th>
-            <th class="table-th" style="width: 10%;">Sale Rate</th>
-            <th class="table-th" style="width: 15%;">Purchase Rate</th>
-            <th class="table-th" style="width: 15%;">Min Order Alert</th>
-            <th class="table-th" style="width: 10%;"> Action</th>
+            <th class="table-th" style="width: 10%;">Carton Size</th>
+            <th class="table-th" style="width: 8%;">Sale Rate</th>
+            <th class="table-th" style="width: 7%;">Profit %</th>
+            <th class="table-th" style="width: 10%;">P Rate</th>
+            <th class="table-th" style="width: 10%;">MinOrderAlert</th>
+            <th class="table-th" style="width: 8%;">Cartons</th>
+            <th class="table-th" style="width: 8%;">Loose Paks</th>
+            <th class="table-th" style="width: 8%;">Total Packets</th>
+            <th class="table-th" style="width: 9%;"> Action</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
@@ -48,12 +64,18 @@
               </td>
               <td class="table-tr" style="border: 1px solid black;">
                 {{ rowData.ItemName}}
-              </td>
+              </td>              
               <td class="table-tr" style="border: 1px solid black;">
                 {{ rowData.CATEGORY}}
               </td>
               <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.TOTALITEMSINPACK}}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
                 {{ rowData.Rate | currency: '₹' }}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ (rowData.Rate-rowData.PRate)*100/rowData.PRate | number: '1.0-2'}}
               </td>
               <td class="table-tr" style="border: 1px solid black;">
                 <p-cellEditor>
@@ -81,6 +103,35 @@
                     </ng-template>
                 </p-cellEditor>
             </td>
+            <td pEditableColumnField="code" class="table-tr" style="border: 1px solid black;">
+                  <p-cellEditor>
+                      <ng-template pTemplate="input">
+                          <input 
+                              pInputText 
+                              type="text" 
+                              [(ngModel)]="rowData.Cartons" />
+                      </ng-template>
+                      <ng-template pTemplate="output">
+                          {{ rowData.Cartons }}
+                      </ng-template>
+                  </p-cellEditor>
+              </td>
+              <td pEditableColumnField="code" class="table-tr" style="border: 1px solid black;">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input 
+                            pInputText 
+                            type="text" 
+                            [(ngModel)]="rowData.Packets" />
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                        {{ rowData.Packets }}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
+            <td class="table-tr" style="border: 1px solid black;">
+              {{ rowData.STOCK}}
+            </td>            
             <td>
                 <div class="flex align-items-center justify-content-center gap-2">
                     <button 

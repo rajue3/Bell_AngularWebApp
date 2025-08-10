@@ -16,21 +16,26 @@ POPUP : SALESREPORT/ITEMSLIST.COMPONENT.TS
 3. Total Items Sale by Date: 
 page: Weekly-itemscount.component 
 a. Item wise Sales: 
-	SP: USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE  (not using USP_ITEMS_WISE_SALES_COUNT_BY_BILLDATE)
-b. Shop wise Sales with Bill#: 
+	angular method: ViewItemWiseSales()
+	SP: USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE_26JAN25
+	USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE  (USP_ITEMS_WISE_SALES_COUNT_BY_BILLDATE is not in use)
+b. Shop wise Sales with Bill#:  ViewShopWiseSalesWithBill()
 	SP: USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE
-c. Bill wise Sales:
+c. Bill wise Sales: 
 	SP: BELL_SHOP_WISE_SALES_BY_BILLNUMBER
-d. shop wise sales:
+	
+d. shop wise sales: ViewShopWiseSalesWithBill()
 	USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE	
 e. Show Inactive Shops:
 	BELL_GET_INACTIVE_SHOPS
-f. Shop wise Total Sales
+f. Shop wise Total Sales :  ViewShopWiseTotalSales()
 	SP: BELL_SHOP_WISE_TOTAL_SALES
 	
 4. Sale by Item Name
 Page: sales-report-byitem.component.ts
 SP: USP_ITEMS_WISE_SALES_COUNT_BY_ITEMNAME
+FUNCTION: GET_HEADER_ITEMNAMES (NOT using. directly written code to get @cols in same SP. for 'byshop' report type))
+A. BELL_WEEK_WISE_SALES_COUNT_BY_BILLDATE
 
 5. Stock details:
 page: stock-report.component.ts
@@ -40,8 +45,20 @@ b. View All Items with Stock:
 	SP: BELL_STOCK_DETAILS
 c. Stock Entries (In/Out)
 	SP: BELL_GET_STOCK_TRANSACTIONS
+D. Stock Entries (In/Out) Group by Item. SP created but UI page not created. few more changes pending in SP
+	BELL_GET_STOCK_TRANSACTIONS_GROUP_BY_ITEM
 
+e. BELL_GET_PENDING_ORDERS  (https://api.zionwellmark.in/bell/GetPendingOrders/pendingbills/no)
+f. BELL_GET_PENDING_ORDERS  (https://api.zionwellmark.in/bell/GetPendingOrders/pendingbills/no)
+g. https://api.zionwellmark.in/bell/GetPendingOrders/orders/no
+h.
 
+6. Update Stock, Purchase Rate and Min Order
+ a. BELL_STOCK_DETAILS
+ b. update data SP : BELL_UPD_ITEMS_PRATE_MINORDER
+
+7. New report for Cash Trans Change Log/History
+	SP:	BELL_GET_CASH_INOUT_CHANGE_LOG
 
 SPs from VB6 :
 BELL_INC_UPD_Bills

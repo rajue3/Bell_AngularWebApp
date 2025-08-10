@@ -18,7 +18,7 @@
       [(ngModel)]="isAdmin" [ngModelOptions]="{standalone: true}">
       <a style="cursor: pointer;" class="navbar-brand" (click)="usertypeclicked()">&nbsp;Admin User</a>
     </div>
-    <div *ngIf="submitted && user.username==null">
+    <div *ngIf="submitted && user===null">
       <p style="color:red">&nbsp;Invalid Username or Password!</p>
    </div>
     <div class="card-body">

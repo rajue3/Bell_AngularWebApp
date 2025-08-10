@@ -23,7 +23,6 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   // import {ColGroupDef,GridApi,GridOptions,createGrid} from "ag-grid-community";
   // import { ClientSideRowModelModule } from "ag-grid-community";
   // ModuleRegistry.registerModules([ClientSideRowModelModule]);
-
   interface Column {
     field: string;
     header: string;
@@ -37,6 +36,18 @@ interface ExportColumn {
     title: string;
     dataKey: string;
 }
+ interface objChartData {
+    labels: string[];
+    //datasets:string[];
+    datasets:objChartDatasets[];
+  } 
+interface objChartDatasets {
+    label: string;
+    data:string[];
+    borderColor: string;
+    backgroundColor:string;
+  }
+
 export interface SelectedRowDetails {
   ShopName: string;
   Area: string;
@@ -75,6 +86,8 @@ export class  WeeklyItemsCountComponent {
   displayedColumnsTest: string[] = ['Area'];
   displayedColumns: string[] = ['Area','CustomerName','ItemName','Week1','Week2','Week3','Week4','Week5'];
 
+  submittingChart1:boolean=false;
+  submittingChart2:boolean=false;
   submitting1:boolean = false;
   submitting2:boolean = false;
   submitting3:boolean = false;
@@ -86,10 +99,12 @@ export class  WeeklyItemsCountComponent {
   showSpinner: boolean=false;
   value = 0;
   loading = false;
-  selectedArea2: string = '';
+  selectedLine: string = '';
+  selectedArea: string = 'all';
   selectedShop:string = 'all';
-  selectedArea: Areas[] = [];
+  //selectedArea: Areas[] = [];
   //selectedShop: any[] = [];
+  objLines!: Areas[];
   objAreas!: Areas[];
   objShops!: Areas[];
   date1:any;
@@ -115,6 +130,14 @@ export class  WeeklyItemsCountComponent {
   reportHeader:string = '';
   dynamicRowColor:any = 'black';
 
+  chartdata!: objChartData;
+  chartdatasets!: objChartDatasets[];
+  dynamicBGColor!:string;
+  dynamicBorderColor!:string;
+  ChartData: any;
+  ChartOptions: any;
+  showChart:boolean = false;
+
    constructor(private router: Router, private dataService: DataService,
       private formBuilder: FormBuilder,public dialog: MatDialog,
       private dataFilter: DataFilterService, private sharedService: SharedService
@@ -128,16 +151,19 @@ export class  WeeklyItemsCountComponent {
     }    
     
   ngOnInit(): void {
-    this.bindAreasList('lines');
-    if (sessionStorage.getItem('Area'))
+    this.bindAllLines('lines');
+    if (sessionStorage.getItem('Lines'))
       {
-        this.selectedArea2 = sessionStorage.getItem('Area') !;
+        this.selectedLine = sessionStorage.getItem('Lines') !;
         this.reportName = sessionStorage.getItem('reportName');
         this.filterTotalAmount = sessionStorage.getItem('totalAmount') ?? '0';
       }
       if (sessionStorage.getItem('Shop'))
       {
         this.selectedShop = sessionStorage.getItem('Shop') !;
+      }
+      else { this.selectedShop = 'all' 
+        sessionStorage.setItem('Shop','all')
       }
       if (sessionStorage.getItem('billDate1'))
       {
@@ -156,9 +182,117 @@ export class  WeeklyItemsCountComponent {
     { this.BindReportFromSession(); }
   }
 
+  generateChartDataFromDataTable()
+  {
+    this.dataTable = JSON.parse(this.dataSource);
+    //const obj = JSON.parse(this.dataSource);
+    //this.dataTable = Object.values(obj);
+
+    this.chartdatasets = [];
+    this.dynamicColumns = Object.keys(this.dataTable[0]);
+    let coldata : string[];
+    let colname : string;
+    let categories:string[];
+    let varChartdataset : objChartDatasets;
+    categories = [];
+    console.log('this.dynamicColumns.length',this.dynamicColumns.length)
+    for(var col=2;col<this.dynamicColumns.length;col++){
+        coldata = [];
+        categories = [];
+        for(var item in this.dataTable){
+          categories.push(this.dataTable[item]["NAME"]);
+          colname = this.dynamicColumns[col];
+          coldata.push(this.dataTable[item][colname])
+          //console.log('Dynamic table rows =', this.dataTable[item][row]); //is working
+        }
+        this.getRandomRGB();
+        if (this.reportName == "chartdatabymonth")
+          varChartdataset = {label:this.extractMonthYear(this.dynamicColumns[col]),data:coldata,borderColor:this.dynamicBorderColor,backgroundColor:this.dynamicBGColor}
+        else
+          varChartdataset = {label:this.dynamicColumns[col],data:coldata,borderColor:this.dynamicBorderColor,backgroundColor:this.dynamicBGColor}
+        
+        this.chartdatasets.push(varChartdataset);
+      }
+    this.chartdata = {labels:categories,datasets:this.chartdatasets};
+    //console.log('Chart datasets =', this.chartdata);
+    this.BindChartData(this.chartdata);
+    
+      //<td *ngFor="let item of row | keyvalue">{{item.value}}</td>
+    //for(let row=0;row<this.dataTable.length;row++){      
+  }
+
+  // TypeScript: Angular Component or Service
+  extractMonthYear(dateStr: string): string {
+    const date = new Date(dateStr);
+
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+
+    const options: Intl.DateTimeFormatOptions = { month: 'short' };
+    const month = new Intl.DateTimeFormat('en-US', options).format(date);
+    const year = date.getFullYear().toString().slice(-2); // Get last two digits
+
+    return `${month}-${year}`;
+  }
+  getRandomRGB() {
+  const r = Math.floor(Math.random() * 256);  // Red (0–255)
+  const g = Math.floor(Math.random() * 256);  // Green (0–255)
+  const b = Math.floor(Math.random() * 256);  // Blue (0–255)
+  const op = 1;
+  //return `rgb(${r}, ${g}, ${b},1)`;
+  this.dynamicBorderColor = `rgb(${r}, ${g}, ${b})`;
+  this.dynamicBGColor=`rgba(${r}, ${g}, ${b},${op})`;
+  console.log('getRandomRGB called.',this.dynamicBorderColor)
+}
+
+BindChartData(varChartdata:objChartData) {
+    const documentStyle = getComputedStyle(document.documentElement);
+        const textColor = documentStyle.getPropertyValue('--text-color');
+        const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+        const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+        
+        this.ChartData = varChartdata;
+
+        this.ChartOptions = {
+            maintainAspectRatio: false,
+            aspectRatio: 0.8,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: textColor
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: textColorSecondary,
+                        font: {
+                            weight: 500
+                        }
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: textColorSecondary
+                    },
+                    grid: {
+                        color: surfaceBorder,
+                        drawBorder: false
+                    }
+                }
+
+            }
+        };
+  }
+
   //**this is to show columns in the same order without sorting. */ only for manual binding with table. not required for primeng table
   //unsorted(a: any, b: any): number { return 0; }
-  
   downloadAsExcel(){
     console.log('new export excel started..Report3');
     this.sharedService.ExportToExcel(this.filteredItems, "Report3"); 
@@ -169,8 +303,9 @@ export class  WeeklyItemsCountComponent {
     //alert(reportName);
     this.ValidateInputValues();
     if (!this.IsValid)   { return;}
-    sessionStorage.setItem('Area',this.selectedArea2);
+    sessionStorage.setItem('Lines',this.selectedLine);
     sessionStorage.setItem('Shop',this.selectedShop);
+    //sessionStorage.setItem('Area',this.selectedArea);
     sessionStorage.setItem('reportName',reportName);
     sessionStorage.setItem('totalAmount',this.filterTotalAmount);
     this.reportName = reportName;
@@ -194,44 +329,51 @@ export class  WeeklyItemsCountComponent {
       this.filterTotalAmount = '0';
 
     if (reportName == "Item wise Sales")
-      this.ViewItemWiseSales(this.selectedArea2);
+    {  
+      this.ViewItemWiseSales(); //this.selectedLine 
+    }
+    if (reportName == "chartdata" || reportName == "chartdatabymonth")
+    {  
+      this.ViewItemWiseSales_Chart(reportName); //this.selectedLine 
+    }
+
     if (reportName == "Shop wise Sales with BillNo")
     {
-      if (this.selectedArea2 == '' || this.selectedArea2 == 'all')
+      if (this.selectedLine == '' || this.selectedLine == 'all')
         {
             alert("Please select Line/Area");
             return;
         }
-      this.ViewShopWiseSalesWithBill(this.selectedArea2,'SHOPWISEWITHBILL');
+      this.ViewShopWiseSalesWithBill(this.selectedLine,'SHOPWISEWITHBILL');
     }
-    if (reportName == "Shop Wise Sales")
+    if (reportName == "Shop Wise Sales") //without Billnumber
     {
-      if (this.selectedArea2 == '' || this.selectedArea2 == 'all')
+      if (this.selectedLine == '' || this.selectedLine == 'all')
         {
             alert("Please select Line/Area");
             return;
         }
-      this.ViewShopWiseSalesWithBill(this.selectedArea2,'SHOPWISEWITHOUTBILL');
+      this.ViewShopWiseSalesWithBill(this.selectedLine,'SHOPWISEWITHOUTBILL');
     }
     if (reportName == "Shop wise Total Sales") //this with filter on total sales
-      this.ViewShopWiseTotalSales(this.selectedArea2);
+      this.ViewShopWiseTotalSales(this.selectedLine);
     if (reportName == "Bill wise Sales")
     {
-      if (this.selectedArea2 == '' || this.selectedArea2 == 'all')
+      if (this.selectedLine == '' || this.selectedLine == 'all')
         {
             alert("Please select Line/Area");
             return;
         }
-      this.ViewBillWiseSales(this.selectedArea2);
+      this.ViewBillWiseSales(this.selectedLine);
     }
     if (reportName == "InActive Shops")
     {
-      if (this.selectedArea2 == '' || this.selectedArea2 == 'all')
+      if (this.selectedLine == '' || this.selectedLine == 'all')
         {
             alert("Please select Line/Area");
             return;
         }
-      this.ShowInactiveShops(this.selectedArea2);
+      this.ShowInactiveShops(this.selectedLine);
     }
   }
   generateTableWithDynamicCols()
@@ -257,7 +399,7 @@ export class  WeeklyItemsCountComponent {
   }
    ValidateInputValues()
    {
-      if (this.selectedArea2 =='')
+      if (this.selectedLine =='')
       {
           this.errorMsg = "Please select Line/Area";
       }
@@ -295,8 +437,30 @@ export class  WeeklyItemsCountComponent {
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
       //console.log('column names from loop =',this.cols);
       //this.submitting = false;
+      // if (this.reportName == 'chartdata')
+      // {
+      //     alert('loading from session');
+      //     this.showChart = true;
+      //     this.generateChartDataFromDataTable();
+      // }
    }
 
+   onRowClicked(rowItem: any,colHeader:any,colValue:any)
+   {     
+     if (this.reportName === 'Shop wise Total Sales' && colHeader.includes('-'))
+     {
+      console.log('col header =',colHeader);
+      console.log('shop name =',rowItem.SHOPNAME);
+      console.log('row clicked',rowItem);
+      const dialogRef = this.dialog.open(ItemsByCustIDComponent, {
+        data: {reportName:"ShopWiseTotalSales",selectedArea: this.selectedLine,selectedShop:rowItem.SHOPNAME,selectedDate: formatDate(colHeader,'dd-MMM-yyyy','en-US'),totalBills:0},
+        height: '500px',
+        width: '450px',
+        position: {left:'2px' }
+      });
+     }
+     else { return;}
+   }
    formatFieldValue(colHeader:any,colValue:any,rowindex:number)
    {
       this.dynamicRowColor = 'black';
@@ -321,11 +485,15 @@ export class  WeeklyItemsCountComponent {
       {
         return colValue + '%';
       }
-      if (colHeader != 'BILLNUMBER' && colHeader != 'SNO.' && colHeader != 'SHOPNAME' && colHeader != 'NAME' && !colHeader.includes('QTY') )
+      if(colHeader === 'SALESMAN' || colHeader === 'LandMark')
+      {
+          return colValue || '';
+      }
+      if (colHeader != 'AREA' && colHeader != 'BILLNUMBER' && colHeader != 'SNO.' && colHeader != 'CATEGORY' && colHeader != 'SHOPNAME' && colHeader != 'NAME' && !colHeader.includes('QTY') )
       {
           //console.log('formatFieldValue',Number(colValue).toFixed(2));
           return Number(colValue).toFixed(2);
-      }      
+      }            
       else
       {        
         //return 'hi <font color=red>' + (colValue) + '</font>';
@@ -333,19 +501,43 @@ export class  WeeklyItemsCountComponent {
       }
    }
 
-   ViewItemWiseSales(strArea:any) {
+bindAreasList(strType:string)
+{
+  this.selectedArea='all'
+  this.selectedShop='all'
+  const sessionAreasList = sessionStorage.getItem('custAreasList');    
+    if (!sessionAreasList)  
+    {
+      //console.log('session is empty ') 
+      this.sharedService.getBellAreas('area','n','n').subscribe((response: Areas[]) => {
+        sessionStorage.setItem('custAreasList',JSON.stringify(response));
+        //this.objAreas = response;
+        this.objAreas = response.filter(item => item.Line === strType)
+        //console.log('Area names : ', this.objAreas);
+    },
+      (err: any) => console.log(err),
+      () => console.log('getCustomersPage() retrieved customers'));      
+    }  
+  else
+  {
+      console.log('getting from session') 
+      var AllAreas:Areas[];
+      AllAreas = JSON.parse(sessionStorage.getItem('custAreasList') || '[]')
+      //console.log('Areas retrieved from Session: ', AllAreas);
+      if (AllAreas)
+      {this.objAreas = AllAreas.filter(item => item.Line === strType);}
+  }
+  
+  }
+
+   ViewItemWiseSales() {
     this.submitting1 = true;
-    this.sharedService.GetSaleItemsbyBillDate(strArea,this.selectedShop,this.date1,this.date2).subscribe((response: any[]) => {
+    this.sharedService.GetSaleItemsbyBillDate(this.selectedLine,this.selectedArea,this.selectedShop,this.date1,this.date2).subscribe((response: any[]) => {
       //this.dataSource = response;
       this.dataSource = <any>response;
       if (!response || response.length == 2) {
         console.log('request is empty or null =', response);
-         this.submitting1 = false;
-         this.submitting2 = false;
-         this.submitting3 = false;
-         this.submitting4 = false;
-         this.submitting5 = false;
-         this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
          this.dataTable = this.filteredItems = [];
          this.cols = [];
          return;
@@ -386,25 +578,89 @@ export class  WeeklyItemsCountComponent {
       }
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
       console.log('column names from loop =',this.cols);
-      this.submitting1 = false;
-      this.submitting2 = false;
-      this.submitting3 = false;
-      this.submitting4 = false;
-      this.submitting5 = false;
-      this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
      },
      (err: any) => console.log(err),
      () => console.log('Retrieved LS Items using getBellWeeklyReportNew() '));
       //this.submitting1 = false;
   }
-  
-  // onRowClicked(rowItem: any)
-  // {
-  //   alert(rowItem.NAME);
-  //   console.log('row clicked',rowItem);
-  //   return;
-  // }
-  ViewShopWiseSalesWithBill(strArea:any,reportType:string) {
+  showHideControlls(value:boolean)
+  {
+      this.showChart = value;
+      this.submittingChart1 = value;
+      this.submittingChart2 = value;
+      this.submitting1 = value;
+      this.submitting2 = value;
+      this.submitting3 = value;
+      this.submitting4 = value;
+      this.submitting5 = value;
+      this.submitting6 = value;
+  }
+  ViewItemWiseSales_Chart(strType:String) {
+    if (strType == "chartdata")
+    {
+      this.submittingChart1 = true;
+      this.submittingChart2 = false;
+    }
+    if (strType == "chartdatabymonth")
+    {
+      this.submittingChart1 = false;
+      this.submittingChart2 = true;
+    }
+    this.showChart = true;
+    var objSearchVal = {
+        reporttype: strType, area: this.selectedLine, shop: this.selectedShop,itemname:'all',date1:this.date1,date2:this.date2
+      };
+      //this.sharedService.GetSaleItemsbyBillDate(this.selectedLine,this.selectedArea,this.selectedShop,this.date1,this.date2).subscribe((response: any[]) => {
+      this.sharedService.getBellWeeklyReportNew(objSearchVal).subscribe((response: any[]) => {
+      //this.dataSource = response;
+      this.dataSource = <any>response;
+      if (!response || response.length == 2) {
+        console.log('request is empty or null =', response);
+         this.showHideControlls(false);  //this is to show/hide common controlls.
+         this.dataTable = this.filteredItems = [];
+         this.cols = [];
+         return;
+        }
+      sessionStorage.setItem('filteredItems',this.dataSource);
+      this.dataTable = this.filteredItems = JSON.parse(this.dataSource);
+      if (this.dataTable.length == 0) {
+          this.submittingChart1 = false;
+          this.submittingChart2 = false;
+          //this.showChart = false;
+           return;    }
+      //const obj = JSON.parse(this.dataSource);
+      //this.dataTable = Object.values(obj);
+      this.reportHeader = "Total Items " + this.filteredItems.length;
+      this.dynamicColumns = Object.keys(this.dataTable[0]);
+      let newCol:any;
+      this.cols = [];
+      
+      //let exportCols = [];
+      //console.log('ViewItemWiseSales_Chart :: received items :',this.dataTable)
+      if (this.dataTable.length == 0) { this.submitting1 = false; }
+      for(var item in this.dynamicColumns){        
+        if(this.dynamicColumns[item] == 'SHOPNAME' || this.dynamicColumns[item] == 'NAME')
+          newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:true};
+        else
+          newCol = {field:this.dynamicColumns[item],header:this.dynamicColumns[item],customExportHeader:this.dynamicColumns[item],isFrozenColumn:false};
+        //console.log('newcol=',newCol);
+        this.cols.push(newCol);
+      }
+
+      this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
+      console.log('column names from loop =',this.cols);
+      this.showHideControlls(false);  //this is to show/hide common controlls.
+      this.showChart = true;
+      this.generateChartDataFromDataTable();
+
+     },
+     (err: any) => console.log(err),
+     () => console.log('Retrieved LS Items using getBellWeeklyReportNew() '));
+      //this.submitting1 = false;
+  }
+
+  ViewShopWiseSalesWithBill(strLine:any,reportType:string) {
     if (reportType=='SHOPWISEWITHBILL')
     {
       this.submitting2 = true;
@@ -422,16 +678,11 @@ export class  WeeklyItemsCountComponent {
     // this.date2 = this.billDate2.value;
     // this.date2 = formatDate(this.date2,'dd-MMM-yyyy','en-US');
 
-    this.sharedService.GetSalebyShopsBillDateWithBillNo(reportType,strArea,this.selectedShop,this.date1,this.date2).subscribe((response: any[]) => {
+    this.sharedService.GetSalebyShopsBillDateWithBillNo(reportType,strLine,this.selectedArea,this.selectedShop,this.date1,this.date2).subscribe((response: any[]) => {
       //console.log('request if null =', response);
       if (!response || response.length == 2) {
         console.log('request is empty or null =', response);
-         this.submitting1 = false;
-         this.submitting2 = false;
-         this.submitting3 = false;
-         this.submitting4 = false;
-         this.submitting5 = false;
-         this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
          this.dataTable = this.filteredItems = [];
          this.cols = [];
          return;
@@ -454,31 +705,21 @@ export class  WeeklyItemsCountComponent {
       }
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
       //console.log('column names from loop =',this.cols);
-      this.submitting1 = false;
-      this.submitting2 = false;
-      this.submitting3 = false;
-      this.submitting4 = false;
-      this.submitting5 = false;
-      this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
      },
      (err: any) => console.log(err),
      () => console.log('Retrieved LS Items using getBellWeeklyReportNew() '));
       //this.submitting2 = false;
   }
-  ViewShopWiseTotalSales(strArea:any) {
+  ViewShopWiseTotalSales(strLine:any) {
     this.submitting6 = true;
     if (this.filterTotalAmount == "" || this.filterTotalAmount == undefined)
     {this.filterTotalAmount = 0;}
 
-    this.sharedService.GetTotalSalesByShop(strArea,this.selectedShop,this.date1,this.date2,this.filterTotalAmount ?? 0 ).subscribe((response: any[]) => {
+    this.sharedService.GetTotalSalesByShop(strLine,this.selectedArea,this.selectedShop,this.date1,this.date2,this.filterTotalAmount ?? 0 ).subscribe((response: any[]) => {
       if (!response || response.length == 2) {
         console.log('request is empty or null =', response);
-         this.submitting1 = false;
-         this.submitting2 = false;
-         this.submitting3 = false;
-         this.submitting4 = false;
-         this.submitting5 = false;
-         this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
         this.dataTable = this.filteredItems = [];
          this.cols = [];
          return;
@@ -501,30 +742,20 @@ export class  WeeklyItemsCountComponent {
       }
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
       console.log('column names from loop =',this.cols);
-      this.submitting1 = false;
-      this.submitting2 = false;
-      this.submitting3 = false;
-      this.submitting4 = false;
-      this.submitting5 = false;
-      this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
     },
      (err: any) => console.log(err),
      () => console.log('Retrieved LS Items using GetTotalSalesByShop() '));
       //this.submitting5 = false;
   }
 
-  ViewBillWiseSales(strArea:any) {
+  ViewBillWiseSales(strLine:any) {
      this.submitting3 = true;
-    this.sharedService.GetSalebyBillNumber(strArea,this.selectedShop,this.date1,this.date2).subscribe((response: any[]) => {
+    this.sharedService.GetSalebyBillNumber(strLine,this.selectedArea,this.selectedShop,this.date1,this.date2).subscribe((response: any[]) => {
       //console.log('ViewBillWiseSales API response =', response);
       if (!response || response.length == 2) {
         console.log('request is empty or null =', response);
-         this.submitting1 = false;
-         this.submitting2 = false;
-         this.submitting3 = false;
-         this.submitting4 = false;
-         this.submitting5 = false;
-        this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
         this.dataTable = this.filteredItems = [];
          this.cols = [];
          return;
@@ -548,12 +779,7 @@ export class  WeeklyItemsCountComponent {
       }
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
       //console.log('column names from loop =',this.cols);
-      this.submitting1 = false;
-      this.submitting2 = false;
-      this.submitting3 = false;
-      this.submitting4 = false;
-      this.submitting5 = false;
-      this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
     },
      (err: any) => console.log(err),
      () => console.log('Retrieved LS Items using getBellWeeklyReportNew() '));
@@ -565,12 +791,7 @@ export class  WeeklyItemsCountComponent {
     this.sharedService.GetInactiveShops(strArea,this.selectedShop,this.date1,this.date2).subscribe((response: any[]) => {
       if (!response || response.length == 2) {
         console.log('request is empty or null =', response);
-         this.submitting1 = false;
-         this.submitting2 = false;
-         this.submitting3 = false;
-         this.submitting4 = false;
-         this.submitting5 = false;
-        this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
         this.dataTable = this.filteredItems = [];
          this.cols = [];
          return;
@@ -578,10 +799,10 @@ export class  WeeklyItemsCountComponent {
       //this.dataSource = response;
       this.dataSource = <any>response;
       //this.findTotals(response);
-      //console.log('getBellWeeklyReportNew' ,<any>response)
       //this.generateTableWithDynamicCols();
       sessionStorage.setItem('filteredItems',this.dataSource);
       this.dataTable = this.filteredItems = JSON.parse(this.dataSource);
+      console.log('ShowInactiveShops() :' ,this.dataTable)
       //const obj = JSON.parse(this.dataSource);
       //this.dataTable = Object.values(obj);
       this.reportHeader = "Total InActive Shops " + this.filteredItems.length;
@@ -599,12 +820,7 @@ export class  WeeklyItemsCountComponent {
       }
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
       //console.log('column names from loop =',this.cols);
-      this.submitting1 = false;
-      this.submitting2 = false;
-      this.submitting3 = false;
-      this.submitting4 = false;
-      this.submitting5 = false;
-      this.submitting6 = false;
+         this.showHideControlls(false);  //this is to show/hide common controlls.
     },
      (err: any) => console.log(err),
      () => console.log('Retrieved LS Items using getBellWeeklyReportNew() '));
@@ -687,46 +903,46 @@ export class  WeeklyItemsCountComponent {
     this.findTotals(this.filteredItems);
   }
 
-bindAreasList(strArea:string)
+bindAllLines(strType:string)
 {
-  var sessionAreasList = sessionStorage.getItem('AreasList') || '';
+  var sessionAreasList = sessionStorage.getItem('custLinesList') || '';
   //if (sessionAreasList) { this.filteredItems = []; return };
   if (!sessionAreasList)
   {
-    this.sharedService.getBellAreas(strArea,'n','n').subscribe((response: Areas[]) => {
-      this.objAreas = response;
-      sessionStorage.setItem('AreasList',JSON.stringify(this.objAreas));
+    this.sharedService.getBellAreas(strType,'n','n').subscribe((response: Areas[]) => {
+      this.objLines = response;
+      sessionStorage.setItem('custLinesList',JSON.stringify(this.objLines));
       //console.log('Area names : ', response);
     },
     (err: any) => console.log(err),
-    () => console.log('getCustomersPage() retrieved customers'));
+    () => console.log('bindAllLines() retrieved customers'));
   }
   else
-  { this.objAreas = JSON.parse(sessionAreasList);
-    //console.log('Areas retrieved from Session: ', this.objAreas);
+  { this.objLines = JSON.parse(sessionAreasList);
+    //console.log('Areas retrieved from Session: ', this.objLines);
   }
 }
 
-onChange(event:any) {
-  console.log('event.value: ',event.value.Area);
-  this.bindShopNames(event.value.Area);
+// onChange(event:any) {
+//   console.log('event.value: ',event.value.Area);
+//   this.bindShopNames(event.value.Area);
 
-  for(var item in this.selectedArea){
+//   for(var item in this.selectedAreas){
 
-    console.log(this.selectedArea[item]);
-    //for(var row in this.selectedArea[item]){
-      //console.log('selected area =', this.dataTable[item][row]); //is working
-    //}
-  }
-  console.log('selected area  :' + this.selectedArea[0].Area);
-}
+//     console.log(this.selectedAreas[item]);
+//     //for(var row in this.selectedArea[item]){
+//       //console.log('selected area =', this.dataTable[item][row]); //is working
+//     //}
+//   }
+//   console.log('selected area  :' + this.selectedAreas[0].Area);
+// }
 onShopsChange(event:any) {
   console.log('selected Shop  :' + this.selectedShop);
   console.log('event.value: ',event.value.Shop);
 }
   bindShopNames(strArea:any)
   {
-    //alert(strArea);
+    this.selectedShop='all'
     if (strArea)
     {
       //this.totalShops = 0;

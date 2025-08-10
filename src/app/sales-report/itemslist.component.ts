@@ -15,6 +15,7 @@ import { AlertService } from '../_services';
 export interface DialogData {
   selectedID: any;
   selectedArea: any;
+  selectedShop:any;
   totalBills: any;
   selectedDate:any;
   reportName:any;
@@ -70,7 +71,7 @@ export class ItemsByCustIDComponent implements OnInit {
     if (this.data.reportName == "itemsbyareadate")
     {
       //this.service.getBellItemsbyCustIDWeekly(this.data.selectedID,this.data.selectedArea,this.data.selectedShop,this.data.selectedDate)
-      this.service.getBellItemsbyAreaDate(this.data.selectedArea,this.data.selectedDate)
+      this.service.getBellItemsbyAreaDate(this.data.reportName,this.data.selectedArea,'na',this.data.selectedDate)
       .subscribe(items => {
       this.lisfofItems = items;
       this.findTotals(items);
@@ -78,6 +79,16 @@ export class ItemsByCustIDComponent implements OnInit {
       //console.log('selected list of items: ', items )
       });
     }
+    if (this.data.reportName == "ShopWiseTotalSales")
+      {
+        this.service.getBellItemsbyAreaDate(this.data.reportName,this.data.selectedArea,this.data.selectedShop,this.data.selectedDate)
+        .subscribe(items => {
+        this.lisfofItems = items;
+        this.findTotals(items);
+        this.itemsCount=this.lisfofItems.length;
+        //console.log('selected list of items: ', items )
+        });
+      }
   }
 
   findTotals(data:any){

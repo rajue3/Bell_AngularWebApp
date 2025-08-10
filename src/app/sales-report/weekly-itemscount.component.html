@@ -15,16 +15,24 @@
 </div> -->
 <div class="card">
   <div class="row">
-    <div class="col-sm-3">
-      <label class="form-label">Line </label><br/>
-      <select [(ngModel)]="selectedArea2" name="matArea" (change)="bindShopNames(selectedArea2)"
+    <div class="col-sm-2">
+      <label class="form-label">Line</label><br/>
+      <select [(ngModel)]="selectedLine" name="matArea" (change)="bindAreasList(selectedLine)"
        style="width: 220px;height: 25px;">
         <option value="all" >--All--</option>
-        <option *ngFor="let area of objAreas" value={{area.Line}}> {{area.Line}} </option>
+        <option *ngFor="let line of objLines" value={{line.Line}}> {{line.Line}} </option>
       </select>
     </div>
-      <div class="col-sm-3">
-        <label class="form-label">Shop </label><br/>
+    <div class="col-sm-2">
+      <label class="form-label">Area</label><br/>
+      <select [(ngModel)]="selectedArea" name="matArea" (change)="bindShopNames(selectedArea)"
+       style="width: 220px;height: 25px;">
+       <option value="all" >--All--</option>
+        <option *ngFor="let area of objAreas" value={{area.Area}}> {{area.Area}} </option>
+      </select>
+    </div>
+      <div class="col-sm-2">
+        <label class="form-label">Shop Names </label><br/>
       <select [(ngModel)]="selectedShop" name="matShop" style="width: 220px;height: 25px;">
         <option value="all" >--All--</option>
         <option *ngFor="let shop of objShops" value={{shop.Shop}} > {{shop.Shop}} </option>
@@ -33,7 +41,7 @@
 
   </div>
   <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-2">
     <mat-form-field  style="width: 220px;" class="form-control">
       <input matInput [matDatepicker]="picker1" [formControl]="billDate1" placeholder="From Date"
       class="form-control">
@@ -42,7 +50,7 @@
       <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-2">
       <mat-form-field style="width: 220px;" class="form-control">
         <input matInput [matDatepicker]="picker2" [formControl]="billDate2" placeholder="To Date"
           class="form-control">
@@ -55,8 +63,14 @@
       &nbsp;
   </div>
   <div class="row">
-    <div class="col-sm-8" style="vertical-align: bottom;align-items: baseline;">
+    <div class="col-sm-10" style="vertical-align: bottom;align-items: baseline;">
       <br/>
+      <button class="btn btn-primary" style="border-color: red;" (click)="generateReport('chartdata')">
+          <span *ngIf="submittingChart1" class="spinner-border spinner-border-sm me-1"></span>
+          Week wise Sales Chart&nbsp;&nbsp;</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" style="border-color: red;" (click)="generateReport('chartdatabymonth')">
+          <span *ngIf="submittingChart2" class="spinner-border spinner-border-sm me-1"></span>
+          Month wise Sales Chart&nbsp;&nbsp;</button>&nbsp;&nbsp;
         <button class="btn btn-primary" (click)="generateReport('Item wise Sales')">
         <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
         Item Wise Sales by Week</button>&nbsp;&nbsp;
@@ -85,21 +99,26 @@
       <input type="text" maxlength="10" (keypress)="numberOnly($event)" class="form-control" name="txtamt"
       [(ngModel)]="filterTotalAmount" value="0" />
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-4">
       <br/>
       &nbsp;<button class="btn btn-primary" (click)="generateReport('Shop wise Total Sales')">
         <span *ngIf="submitting6" class="spinner-border spinner-border-sm me-1"></span>
-        Shop Wise Total Sales</button>
+        Shop Wise Total Sales</button><h5><b>(Click on Date field to view list of items for respective Shop)</b></h5>
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-6">
       <div style="text-align: left;">
-        <h5><b>{{ reportName }} &nbsp; | </b> Line : <b> {{selectedArea2}} </b> | Shop Name : <b> {{selectedShop}} </b> :: {{reportHeader}} </h5>
+        <h5><b>{{ reportName }} &nbsp; | </b> Line : <b> {{selectedLine}} </b> | Area : <b> {{selectedArea}} </b>| Shop Name : <b> {{selectedShop}} </b> :: {{reportHeader}} </h5>
       </div>
       <label *ngIf="!IsValid" style="color:red;font-weight: bold;">{{errorMsg}}</label>
     </div>
   </div>
 </div>
 
+<div id="grid2" [hidden]="!showChart">
+  <div class="card">
+      <p-chart type="bar" [data]="ChartData" [options]="ChartOptions" />
+  </div>
+</div>
 <div class="card" style="background: #0000000e;">
   <div style="font-size: 12px;color: white;font-family: Verdana, sans-serif;">
   <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="500px" [tableStyle]="{ 'min-width': '50rem' }"
@@ -120,7 +139,8 @@
             (click)="onRowClicked(rowData)">
               {{rowData[col.field] || '0'}}
             </td> -->
-            <td class="table-td" style="color:{{dynamicRowColor}};" *ngFor="let col of columns" pFrozenColumn [frozen]="col?.isFrozenColumn">
+            <td class="table-td" style="color:{{dynamicRowColor}};" *ngFor="let col of columns" pFrozenColumn [frozen]="col?.isFrozenColumn"
+            (click)="onRowClicked(rowData,col.field,rowData[col.field])">
               
               <!-- {{rowData[col.field] || '0'}} -->
               {{ formatFieldValue(col.field,rowData[col.field],ri) }}
