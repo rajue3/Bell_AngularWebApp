@@ -1,0 +1,149 @@
+<h4 style="text-align: center;">Report4::Sales Report by Shop Name for each Item</h4>
+<div class="card">
+  <div class="row">
+    <div class="col-sm-3">
+      <div >
+      <label class="form-label">Line </label><br/>        
+        <p-multiSelect
+            filter="false" [options]="objAreas" [(ngModel)]="selectedAreas" optionLabel="Line"
+            (onClick)="selectedAreas" placeholder="Select Line" (onChange)="getSelectedAreaNames()"/>
+      </div>
+      
+    </div>
+      <div class="col-sm-3">
+          <label class="form-label">Item Name</label><br/>
+          <p-multiSelect
+            filter="false" [options]="objItems" [(ngModel)]="selectedItems" optionLabel="ItemName"
+            (onClick)="selectedItems" placeholder="Select Item" (onChange)="getSelectedItemNames()"/>
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-3">
+    <mat-form-field  style="width: 220px;" class="form-control">
+      <input matInput [matDatepicker]="picker1" [formControl]="billDate1" placeholder="From Date"
+      class="form-control" (dateChange)="bindItemNames(selectedArea,selectedShop)">
+      <mat-hint>From Date</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
+    </mat-form-field>
+    </div>
+    <div class="col-sm-3">
+    <mat-form-field style="width: 220px;" class="form-control">
+      <input matInput [matDatepicker]="picker2" [formControl]="billDate2" placeholder="To Date"
+      class="form-control" (dateChange)="bindItemNames(selectedArea,selectedShop)">
+      <mat-hint>To Date</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
+    </mat-form-field>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12" style="vertical-align: bottom;align-items: baseline;">
+        <br/>
+        <button class="btn btn-primary" style="border-color: red;" (click)="WeeklyItemWiseSalesClicked('weeklyitemwisesales')">
+          <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
+          Weekly Item Wise Sales&nbsp;&nbsp;</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" style="border-color: red;" (click)="MonthlyItemWiseSalesClicked('monthlyitemwisesales')">
+          <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
+          Monthly Item Wise Sales&nbsp;&nbsp;</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" style="border-color: red;" (click)="ItemWiseSalesClicked('itemwisesales')">
+          <span *ngIf="submitting3" class="spinner-border spinner-border-sm me-1"></span>
+          Item Wise Sales&nbsp;&nbsp;</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" (click)="dt2.exportCSV()">Export to Excel</button>
+          &nbsp;
+      </div>
+    </div>
+</div>
+<div style="text-align: center;" class="form-control">
+  <h3><b>{{ selectedReportName }} &nbsp; | </b> Line Name selected : <b> {{ selectedArea }} </b> :: 
+    <br/>
+    Selected Items :<b> {{selectedItem}}</b>
+    <span style="color:red;font-weight:bold;"> | GRAND TOTAL: {{grandTotalQty | number:'1.2-2'}} </span> </h3>
+</div>
+<div class="card" >
+  <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="400px" styleClass="mt-3"  [columns]="cols">
+      <ng-template pTemplate="header" let-columns>
+         <tr>
+          <th style="min-width:100px" *ngFor="let col of columns" alignFrozen="left"
+             pFrozenColumn [frozen]="col.isFrozenColumn">{{col.header}}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+          <tr>
+            <td  style="border: 1px solid black;" *ngFor="let col of columns" alignFrozen="left"
+            pFrozenColumn [frozen]="col.isFrozenColumn">
+              {{rowData[col.field] || ''}}
+            </td>
+          </tr>
+          <!-- <tr [pSelectableRow]="rowitem" *ngFor="let row of dataTable" class="table-tr">
+            <td class="table-td" *ngFor="let item of row | keyvalue : unsorted"
+            pFrozenColumn>{{item.value || 0}}</td>
+          </tr> -->
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="5"><h3 style="text-align: center;color: red;"><b>No data found.</b></h3></td>
+        </tr>
+    </ng-template>
+  </p-table>
+  <hr>
+  <br>
+
+</div>
+
+<!-- <div class="ag-theme-balham" style="width: 100%; height: 100%;">
+<ag-grid-angular
+ style="width: 80%; height: 350px;"
+ [rowData]="rowData"
+ [columnDefs]="colDefs"
+ [class]="themeClass"
+ (rowClicked)="showItemsByCustID($event)"
+ [grandTotalRow]="grandTotalRow"
+ [pagination]="true"
+ [paginationPageSize]="20"
+>
+</ag-grid-angular>
+</div> -->
+
+<!-- <section >
+  <div class="container">
+    <table class="table table-hover">
+      <thead class="thead-dark">
+        <tr>
+          <th>Area</th>
+          <th>Shop Name</th>
+          <th>Customer Name</th>
+          <th>Week1</th>
+          <th>Week2</th>
+          <th>Week3</th>
+          <th>Week4</th>
+          <th>Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dataItem of filteredItems;" >
+          <td>{{dataItem.Area}}</td>
+          <td>{{dataItem.ShopName}}</td>
+          <td>{{dataItem.CustomerName}}</td>
+          <td>{{dataItem.Week1}}</td>
+          <td>{{dataItem.Week2}}</td>
+          <td>{{dataItem.Week3}}</td>
+          <td>{{dataItem.Week4}}</td>
+          <td>{{dataItem.TotalAmount}}</td>
+        </tr>
+        <tr>
+          <td colspan="2"></td>
+          <td colspan="1">Totals (₹):</td>
+          <td colspan="1">{{Total_Week1}}</td>
+          <td colspan="1">{{Total_Week2}}</td>
+          <td colspan="1">{{Total_Week3}}</td>
+          <td colspan="1">{{Total_Week4}}</td>
+          <td colspan="1">{{GrandTotal}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  </section> -->
+
