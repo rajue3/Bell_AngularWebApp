@@ -311,6 +311,7 @@ BindChartData(varChartdata:objChartData) {
     this.reportName = reportName;
     //Clear session data and table
     sessionStorage.removeItem('filteredItems');
+      this.grandTotalQty = 0;
 
     //this.BindReportFromSession();
     //alert(this.billDate1.value);
@@ -596,7 +597,11 @@ bindAreasList(strType:string)
       this.submitting5 = value;
       this.submitting6 = value;
   }
+  
+  grandTotalQty:number = 0;
+
   ViewItemWiseSales_Chart(strType:String) {
+  
     if (strType == "chartdata")
     {
       this.submittingChart1 = true;
@@ -647,6 +652,34 @@ bindAreasList(strType:string)
         //console.log('newcol=',newCol);
         this.cols.push(newCol);
       }
+      
+      // To adde Total Column
+      this.grandTotalQty = 0;
+      var totalQty:number;
+      if (strType !='')
+          {
+            newCol = {field:"TOTAL",header:"TOTAL",customExportHeader:"TOTAL",isFrozenColumn:false};
+            this.cols.push(newCol);
+            //for (var row:number=0;row < this.dataTable.length;row++)
+            for(var row in this.dataTable)
+              {
+              totalQty = 0;
+              //for(var col:number=2; col<=this.dynamicColumns.length;col++)
+              //for(var col in this.dataTable[row])
+              for(var col in this.dynamicColumns)
+              {
+                //console.log('this.dynamicColumns[col]', this.dynamicColumns[col]);
+                if( this.dynamicColumns[col] != 'SNO.' && this.dynamicColumns[col] != 'AREA' && this.dynamicColumns[col] !='ITEMCODE' && this.dynamicColumns[col] != 'ITEMNAME' && this.dynamicColumns[col] != 'NAME')
+                {
+                  totalQty = totalQty + Number(this.filteredItems[row][this.dynamicColumns[col]]);
+                  //totalQty = totalQty + Number(this.dataTable[row][col]);
+                  //console.log('loop through rows & cols : ',this.dataTable[row][this.dynamicColumns[col]]);
+                }
+              }
+              this.filteredItems[row]["TOTAL"] = totalQty.toFixed(2);
+              this.grandTotalQty = this.grandTotalQty + totalQty
+            }
+        }
 
       this.exportColumns = this.cols.map((col) => ({ title: col.header, dataKey: col.field }));
       console.log('column names from loop =',this.cols);

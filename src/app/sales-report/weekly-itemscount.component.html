@@ -107,7 +107,9 @@
     </div>
     <div class="col-sm-6">
       <div style="text-align: left;">
-        <h5><b>{{ reportName }} &nbsp; | </b> Line : <b> {{selectedLine}} </b> | Area : <b> {{selectedArea}} </b>| Shop Name : <b> {{selectedShop}} </b> :: {{reportHeader}} </h5>
+        <h5><b>{{ reportName }} &nbsp; | </b> Line : <b> {{selectedLine}} </b> | Area : <b> {{selectedArea}} </b>| Shop Name : <b> {{selectedShop}} </b> :: {{reportHeader}} 
+        <span style="color:red;font-weight:bold;"> | GRAND TOTAL: {{grandTotalQty | number:'1.2-2'}} </span>
+      </h5>
       </div>
       <label *ngIf="!IsValid" style="color:red;font-weight: bold;">{{errorMsg}}</label>
     </div>

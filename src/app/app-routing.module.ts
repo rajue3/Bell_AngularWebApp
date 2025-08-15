@@ -6,6 +6,7 @@ import { CustomOrdersComponent } from './orders/orders.component';
 import { DemoComponent } from './demo/demo.component';
 import { TableFrozenColumnsDemo } from './demo/table-frozen-columns-demo';
 import { SalesReportComponent } from './sales-report/sales-report.component';
+import { ItemWiseSalesComponent } from './sales-report/itemwise-sales.component';
 import { WeeklyReportComponent } from './sales-report/weekly-report.component';
 import { WeeklyItemsCountComponent } from './sales-report/weekly-itemscount.component';
 //import { ViewItemslistComponent } from './orders/view-itemslist/view-itemslist.component';
@@ -27,6 +28,7 @@ const routes: Routes = [
 
   { path: 'cust', component: AdminComponent, canActivate: [AuthGuard]},
   { path: 'sales', component: SalesReportComponent,canActivate: [AuthGuard]},
+  { path: 'itemwise-sales', component: ItemWiseSalesComponent,canActivate: [AuthGuard]},
   { path: 'weekly', component: WeeklyReportComponent,canActivate: [AuthGuard]},
   { path: 'weeklyrepo2', component: WeeklyItemsCountComponent,canActivate: [AuthGuard]},
   { path: 'salebyitem', component: SalesReportByItemComponent,canActivate: [AuthGuard]},

@@ -21,6 +21,7 @@ import { DemoComponent } from './demo/demo.component';
 import { HeaderComponent } from './header/header.component';
 import { AdminComponent } from './customer/customer.component';
 import { CustomOrdersComponent } from './orders/orders.component';
+import { ItemWiseSalesComponent } from './sales-report/itemwise-sales.component';
 import { SalesReportComponent } from './sales-report/sales-report.component';
 import { WeeklyReportComponent } from './sales-report/weekly-report.component';
 import { WeeklyItemsCountComponent } from './sales-report/weekly-itemscount.component';
@@ -84,7 +85,7 @@ import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
-    AppComponent, HeaderComponent,AdminComponent,CustomOrdersComponent,SalesReportComponent,
+    AppComponent, HeaderComponent,AdminComponent,CustomOrdersComponent,SalesReportComponent,ItemWiseSalesComponent,
     //ViewItemslistComponent,
     WeeklyReportComponent,WeeklyItemsCountComponent, DemoComponent,
     //AllOrdersComponent,
