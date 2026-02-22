@@ -3,7 +3,7 @@ import { Observable, throwError, } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpRequest, HttpEvent } from "@angular/common/http";
-import { IitemDetailsResponse, ItemDetails } from './shared/interfaces';
+import { IitemDetailsResponse, ItemDetails,BellItemList } from './shared/interfaces';
 import { environment } from './environments/environment';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
@@ -82,6 +82,7 @@ export class SharedService {
     //return this.http.get<any>(this.APIUrl + 'bell/GetWeeklySalesByItems/' + strType + '/' + strArea + '/' + shop.replace('/','@') + '/' + itemname.replace('/','@') + '/' + date1+ '/' + date2 );
     return this.http.post<any>(this.APIUrl + 'bell/GetWeeklySalesByItems', objSearch)
     //USP_ITEMS_WISE_SALES_COUNT_BY_ITEMNAME
+    //BELL_WEEK_WISE_SALES_COUNT_BY_BILLDATE
   }
   getBellMonthlyReport(strArea:string,date1:any): Observable<any[]> {
     //alert(date1 + '-' + date2);
@@ -113,7 +114,16 @@ export class SharedService {
   GetStockDetails(strOption:any,strCategory:any): Observable<any[]> {
     return this.http.get<any>(this.APIUrl + 'bell/GetStockDetails/' + strOption + '/' + strCategory);
     //BELL_STOCK_DETAILS
-  }    
+  }   
+  GetSalesmanPendings(strBillDate:any): Observable<any[]> {
+    return this.http.get<any>(this.APIUrl + 'bell/GetSalesmanPendings/' + strBillDate);
+    //BELL_STOCK_DETAILS
+  }   
+  GetOnlinePaymentsReceived(objDetails:any): Observable<any[]> {
+    //strBillDate: any,strLine:string,strSalesman:string,alldates:number
+    //return this.http.get<any>(this.APIUrl + 'bell/GetOnlinePaymentsReceived/'+ strBillDate +'/' + strLine+'/' + strSalesman+'/' + alldates);
+    return this.http.post<any>(this.APIUrl + 'bell/GetOnlinePaymentsReceived',objDetails);
+  } 
   GetPendingOrders(strOption1:any,strOption2:any): Observable<any[]> {
     return this.http.get<any>(this.APIUrl + 'bell/GetPendingOrders/' + strOption1 + '/' + strOption2);
     //BELL_GET_PENDING_ORDERS
@@ -134,7 +144,21 @@ export class SharedService {
     return this.http.get<any>(`${this.APIUrl}bell/Bell_GetAreaList/` + strType + '/' + date1 +'/'+ date2);    
     //USP_GET_AREALIST
   }
-  
+  getMasterDataItems(strType:string): Observable<any[]> {
+    console.log('Bell daily cash- Line and Salesman names', `${this.APIUrl}bell/Bell_GetMasterDataItems/` + strType);
+    return this.http.get<any>(`${this.APIUrl}bell/Bell_GetMasterDataItems/` + strType);    
+    //BELL_GET_CASH_TRANS_BY_DATE_NEW
+  }
+  UpdatePendingDuesReceived(objDataset: any) {
+    //alert(this.APIUrl + 'UpdateOrderStatus');
+    //BELL_SAVE_PENDING_DUES
+    return this.http.post(this.APIUrl + 'bell/UpdateSalesmanPendingDues', objDataset);
+  } 
+  UpdateSalesmanOnlinePayments(objDataset: any) {
+    //BELL_SAVE_PENDING_DUES
+    return this.http.post(this.APIUrl + 'bell/UpdateSalesmanOnlinePayments', objDataset);
+  } 
+
   // getBellItemCategories(): Observable<any[]> {
   //   console.log('Binding Item Categories : ', `${this.APIUrl}bell/Bell_GetAllCategories`);
   //   return this.http.get<any>(`${this.APIUrl}bell/Bell_GetAllCategories`);
@@ -171,6 +195,10 @@ export class SharedService {
     //return this.http.get<any>('https://rajuebps.bsite.net/BellBrand/GetAllOrderItemsByID/' + orderid);
     return this.http.get<any>(this.APIUrl + 'bell/Bell_GetAllCustomers/'+ Line + '/' + Area +  '/' + Shop.replace('/','@') );
   }
+  getBell_GetAllCustomersNew(objDetails: any): Observable<any[]> {
+    console.log('getBell_GetAllCustomersNew - objDetails: ', objDetails);
+    return this.http.post<any>(this.APIUrl + 'bell/Bell_GetAllCustomersNew/', objDetails);
+  }
   updateCustomerLocation(objDetails: any) {
     //alert(this.APIUrl + 'UpdateOrderStatus');
     //return this.http.post('https://rajuebps.bsite.net/BellBrand/UpdateOrderDetails/objbills', objbills);
@@ -196,15 +224,15 @@ export class SharedService {
     //return this.http.get<any>(this.APIUrl + '/Student');
     //alert(this.APIUrl + '/pending');
     //alert(this.APIUrl + 'GetAllOrdersByStatus/' + strStatus);
-    return this.http.get<any>(this.APIUrl + 'GetAllItems');  //USP_GET_ALLITEMS_Refresh
+    return this.http.get<any>(this.APIUrl + 'bell/GetAllItems');  //USP_GET_ALLITEMS_Refresh
   }
   getItemDetailsByID(id: any): Observable<any> {
     //alert(id);
-    return this.http.get<any>(this.APIUrl + 'admin/GetAllItems/' + id);
+    return this.http.get<any>(this.APIUrl + 'bell/GetAllItems/' + id);
     //return this.http.get<any>('https://localhost:44328/admin/GetAllItems/' + id);
   }
 
-  insertItemDetails(item: ItemDetails): Observable<ItemDetails> {
+  insertItemDetails(item: BellItemList): Observable<ItemDetails> {
     //return this.http.post<any>('https://localhost:44328/admin/SaveItemDetails/', item)
     return this.http.post<any>(this.APIUrl + 'admin/SaveItemDetails/', item)
       .pipe(
@@ -215,7 +243,7 @@ export class SharedService {
         catchError(this.handleError)
       );
   }
-  updateItemDetails(item: ItemDetails): Observable<ItemDetails> {
+  updateItemDetails(item: BellItemList): Observable<ItemDetails> {
     //console.log(item.IMAGEURL);
     //to send only filename and avoid complete image path.
     var fullpath = item.IMAGEURL;

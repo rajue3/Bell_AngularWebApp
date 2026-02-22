@@ -1,3 +1,5 @@
+use zionwellmark_onlineorders
+go
 
 --** tblCustomers is for Zion and using from mobile login.
 ---======= Bhavani new tables for ER_LS online storage Mar-2024
@@ -74,8 +76,37 @@ select * from bell_LineSalesManPendings  -- not using this.
 EXEC sp_rename  'bell_LineSalesManPendings', 'bell_LineSalesManPendings_XX';
 
 -----------
+select * from bhavani_ER_Bills order by billdate DESC
+--alter table bhavani_ER_Bills add Damages Int default 0
+--* not using IS_DISCOUNTED, only using discount % 
+--alter table bhavani_ER_Bills add IS_DISCOUNTED CHAR(1) default 'N'
+--UPDATE bhavani_ER_Bills  SET IS_DISCOUNTED ='N'
+ --alter table bhavani_ER_Bills ADD DISCOUNT int default 0
+ --update bhavani_ER_Bills set DISCOUNT=0 
 
-SELECT * FROM BELL_masterdata  -- this is for ER_LS
+select Manufacture, * from BELL_ItemMaster where offeravailable='Y'
+--update BELL_ItemMaster set discountpercent=0
+--alter table add OfferAvailable char(1)
+--alter table BELL_ItemMaster add DiscountPercent int default 0
+
+SELECT * FROM BELL_OFFERSGIVEN
+Select OFFERED_ITEM,RATE,SUM(QTY) AS PAKS,RATE*SUM(QTY) AS AMOUNT from BELL_OFFERSGIVEN Where Line='BHADRACHALAM' and BillDate='21-SEP-2025'
+GROUP BY OFFERED_ITEM,RATE
+
+-- DROP TABLE BELL_OFFERSGIVEN
+CREATE TABLE BELL_OFFERSGIVEN
+(ID INT IDENTITY(1,1) NOT NULL,BILLNO INT, SALESMAN VARCHAR(30),LINE varchar(50),CUSTOMERNAME varchar(50),
+SHOPNAME varchar(100),ACTUAL_ITEM varchar(50),ACTUAL_QTY varchar(20),OFFERED_ITEM VARCHAR(50),RATE INT,QTY INT, BillDate DATETIME,
+ACTIONDATE DATE DEFAULT SYSDATETIME(),USERNAME varchar(30) )
+
+--ALTER TABLE BELL_OFFERSGIVEN alter column ACTUAL_QTY varchar(20)
+
+--Delete from BELL_OFFERSGIVEN where BillNo=1 and Line='1' and Shopname='BHADRACHALAM' and Actual_Item='12 pics Chikky' and BillDate='21-Sep-2025' 
+
+--Insert into BELL_OFFERSGIVEN (BILLNO,Line,customername,shopname,salesman,Actual_Item,Actual_Qty,Offered_Item,Qty,Rate,BillDate,Username) values(1, 'BHADRACHALAM', 'SANJAY', 'BHERU FANCY (BCM)', 'G.SANDEEP','12 pics Chikky','1C (31)','12 pics Chikky',1,102,'21-Sep-2025' ,'RAJU' )
+
+
+SELECT * FROM BELL_masterdata  -- this is for ER_LS also using for DailycashTrans
 
 CREATE TABLE SALESMAN_MASTER
 (ID int IDENTITY(1,1) NOT NULL,ACTIONDATE DATETIME DEFAULT sysdatetime()
@@ -237,6 +268,15 @@ USERNAME NVARCHAR(30),ACTIONDATE datetime default SYSDATETIME()
 --ALTER TABLE bhavani_ER_Bills ALTER COLUMN BILLNUMBER INT
 --ALTER TABLE bhavani_ER_Bills ADD ITEMCODE INT
 --ALTER TABLE bhavani_ER_Bills ADD USERNAME VARCHAR(30)
+-- ALTER TABLE bhavani_ER_Bills ADD CONSTRAINT df_ActionDate  DEFAULT GETDATE() FOR ActionDate;
+--ALTER TABLE bhavani_ER_Bills ADD OFFER_ITEM nvarchar(50), OFFER_RATE money default 0, OFFER_QTY int default 0,SALESMAN NVARCHAR(30)
+--alter table bell_itemmaster add OfferItemname nvarchar(50),OfferPaks int
+
+--DROP TABLE Bell_LS_Orders
+--alter table Bell_LS_Orders  alter column Rate Money
+CREATE TABLE [dbo].Bell_LS_Orders (ID INT IDENTITY(1,1) not null,BILLDATE DATE,AREA nvarchar(50), ITEMNAME nvarchar(30), ITEMCODE int,
+RATE money,T_B int, QTY varchar(10) null,ACTIONDATE DATE DEFAULT getdate(),USERNAME nvarchar(30),WEBSYNCED varchar(3))
+
 
 CREATE TABLE [dbo].bhavani_ER_Bills (  
 BILLID int IDENTITY(1,1) NOT NULL,

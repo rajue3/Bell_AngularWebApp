@@ -223,7 +223,7 @@ export class  WeeklyItemsCountComponent {
 
   // TypeScript: Angular Component or Service
   extractMonthYear(dateStr: string): string {
-    const date = new Date(dateStr);
+    const date = new Date(dateStr.substring(0,9));
 
     if (isNaN(date.getTime())) {
       return 'Invalid Date';
@@ -490,7 +490,7 @@ BindChartData(varChartdata:objChartData) {
       {
           return colValue || '';
       }
-      if (colHeader != 'AREA' && colHeader != 'BILLNUMBER' && colHeader != 'SNO.' && colHeader != 'CATEGORY' && colHeader != 'SHOPNAME' && colHeader != 'NAME' && !colHeader.includes('QTY') )
+      if (colHeader != 'AREA' && colHeader != 'BILLNUMBER' && colHeader != 'SNO.' && colHeader != 'CATEGORY' && colHeader != 'SHOPNAME' && colHeader != 'GROUPNAME' && colHeader != 'CATEGORY' && colHeader != 'NAME' && !colHeader.includes('QTY') )
       {
           //console.log('formatFieldValue',Number(colValue).toFixed(2));
           return Number(colValue).toFixed(2);
@@ -506,9 +506,9 @@ bindAreasList(strType:string)
 {
   this.selectedArea='all'
   this.selectedShop='all'
-  const sessionAreasList = sessionStorage.getItem('custAreasList');    
-    if (!sessionAreasList)  
-    {
+  //const sessionAreasList = sessionStorage.getItem('custAreasList');    
+  //if (!sessionAreasList)  
+  //{
       //console.log('session is empty ') 
       this.sharedService.getBellAreas('area','n','n').subscribe((response: Areas[]) => {
         sessionStorage.setItem('custAreasList',JSON.stringify(response));
@@ -518,17 +518,16 @@ bindAreasList(strType:string)
     },
       (err: any) => console.log(err),
       () => console.log('getCustomersPage() retrieved customers'));      
-    }  
-  else
-  {
-      console.log('getting from session') 
-      var AllAreas:Areas[];
-      AllAreas = JSON.parse(sessionStorage.getItem('custAreasList') || '[]')
-      //console.log('Areas retrieved from Session: ', AllAreas);
-      if (AllAreas)
-      {this.objAreas = AllAreas.filter(item => item.Line === strType);}
-  }
-  
+  //}  
+  // else
+  // {
+  //     console.log('getting from session') 
+  //     var AllAreas:Areas[];
+  //     AllAreas = JSON.parse(sessionStorage.getItem('custAreasList') || '[]')
+  //     //console.log('Areas retrieved from Session: ', AllAreas);
+  //     if (AllAreas)
+  //     {this.objAreas = AllAreas.filter(item => item.Line === strType);}
+  // }  
   }
 
    ViewItemWiseSales() {
@@ -721,6 +720,7 @@ bindAreasList(strType:string)
          return;
         }
       this.dataSource = <any>response;
+      console.log('GetSalebyShopsBillDateWithBillNo response =', this.dataSource);
       sessionStorage.setItem('filteredItems',this.dataSource);
       this.dataTable = this.filteredItems = JSON.parse(this.dataSource);
       this.reportHeader = "Total Items " + this.filteredItems.length;

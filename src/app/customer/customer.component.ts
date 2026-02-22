@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { SharedService } from "src/app/shared.service";
 import { DataFilterService } from '../core/data-filter.service';
 import { DataService } from '../core/data.service';
-import { ItemDetails,BellCustDetails,BellAreaWiseOrders,Areas,Shops, IOrder, IPagedResults } from '../shared/interfaces';
+import { ItemDetails,BellCustDetails,BellAreaWiseOrders,Areas,Shops, IOrder, IPagedResults, Categories } from '../shared/interfaces';
 import { AlertService } from '../shared/_alert';
 import { interval, Subscription } from 'rxjs';
 import { formatDate } from "@angular/common";
@@ -79,6 +79,8 @@ export interface SelectedRowDetails {
   objLines!: Areas[];
   objAreas!: Areas[];
   objShops!: Areas[];
+  objCategories!: Categories[];
+  selectedCategory:string = '';
 
   strTableData:any;
   reportName:any;
@@ -134,7 +136,7 @@ export interface SelectedRowDetails {
     //Clear session data and table
     sessionStorage.removeItem('customerdetails');
     if (reportName == "Active Shops")
-      this.ShowAllShops(this.selectedLine);
+      this.ShowAllShops(this.selectedArea2); //this.selectedLine
 
   }
   generateTableWithDynamicCols()
@@ -211,7 +213,10 @@ export interface SelectedRowDetails {
 
   ShowAllShops(strArea:any) {
     this.submitting4 = true;
-      this.sharedService.getBell_GetAllCustomers(this.selectedLine,strArea,this.selectedShop).subscribe((response: BellCustDetails[]) => {
+      var objDetails: any;
+      objDetails = {Line:this.selectedLine,Area:strArea,ShopName:this.selectedShop,GroupName:this.selectedCategory};      
+      //this.sharedService.getBell_GetAllCustomers(this.selectedLine,strArea,this.selectedShop).subscribe((response: BellCustDetails[]) => {
+      this.sharedService.getBell_GetAllCustomersNew(objDetails).subscribe((response: BellCustDetails[]) => {
       //this.dataSource = response;
       this.dataSource = <any>response;
       //this.findTotals(response);
@@ -270,36 +275,64 @@ bindLinesList()
 }
 bindAreasList(strType:string)
 {
-  //sessionStorage.removeItem('custAreasList')
+  //console.log ('BindArealist called...',strType);
+  sessionStorage.removeItem('custAreasList')
   const sessionAreasList = sessionStorage.getItem('custAreasList');    
   //const sessionAreasList = sessionAreaNames ? JSON.parse(sessionAreaNames) : [];
   //const sessionAreasList = JSON.parse(sessionStorage.getItem('custAreasList') || '[]');
   //if (sessionAreasList) { this.filteredItems = []; return };
-  //console.log('sessionAreasList : ', sessionAreasList);
-    //if (sessionAreasList === null || sessionAreasList === 'undefined' || sessionAreasList === undefined || sessionAreasList === '' || sessionAreasList === '[]')
+  //console.log('sessionAreasList : ', sessionAreasList);    
     if (!sessionAreasList)  
     {
-      //console.log('session is empty ') 
+      console.log('Getting Arealist from API: ') 
       this.sharedService.getBellAreas('area','n','n').subscribe((response: Areas[]) => {
-        sessionStorage.setItem('custAreasList',JSON.stringify(response));
+        //sessionStorage.setItem('custAreasList',JSON.stringify(response));
         //this.objAreas = response;
+        console.log('Area names before filter : ', response);
         this.objAreas = response.filter(item => item.Line === strType)
-        //console.log('Area names : ', this.objAreas);
+        console.log('Area names : ', this.objAreas);
     },
       (err: any) => console.log(err),
       () => console.log('getCustomersPage() retrieved customers'));      
     }  
   else
   {
-      console.log('getting from session') 
+      console.log('Getting AreasList from session') 
       var AllAreas:Areas[];
       AllAreas = JSON.parse(sessionStorage.getItem('custAreasList') || '[]')
-      //console.log('Areas retrieved from Session: ', AllAreas);
+      console.log('Areas retrieved from Session: ', AllAreas);
       if (AllAreas)
       {this.objAreas = AllAreas.filter(item => item.Line === strType);}
-  }
-  
-  }
+      console.log('filtered Area names retrieved from Session: ', this.objAreas);
+  }  
+}
+// bindCategories()
+// {
+//   //console.log ('BindArealist called...',strType);
+//   sessionStorage.removeItem('custCategoryList')
+//   const sessionCategoryList = sessionStorage.getItem('custCategoryList');
+//     if (!sessionCategoryList)  
+//     {
+//       console.log('Getting Catgories from API: ') 
+//       this.sharedService.getBellAreas('groupname','n','n').subscribe((response: Categories[]) => {
+//         sessionStorage.setItem('custCategoryList',JSON.stringify(response));
+//         this.objCategories = response;
+//         console.log('Category names : ', this.objCategories);
+//     },
+//       (err: any) => console.log(err),
+//       () => console.log('getCustomersPage() retrieved customers'));      
+//     }  
+//   else
+//   {
+//       console.log('Getting CATEGORY from session') 
+//       var AllCategories:Categories[];
+//       AllCategories = JSON.parse(sessionStorage.getItem('custCategoryList') || '[]')
+//       console.log('Categories retrieved from Session: ', AllCategories);
+//       if (AllCategories)
+//       {this.objCategories = AllCategories;}
+//       console.log('filtered Category names retrieved from Session: ', this.objCategories);
+//   }  
+// }
 bindShopNames(strArea:any)
   {
     //alert(strArea);
@@ -315,7 +348,7 @@ bindShopNames(strArea:any)
       {
         this.sharedService.getBellAreas(strArea,'n','n').subscribe((response: Areas[]) => {
           this.objShops = response;
-          //console.log('shopnames :', response);
+          console.log('shopnames :', response);
           //console.log(response);
         },
         (err: any) => console.log(err),

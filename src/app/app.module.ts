@@ -12,6 +12,8 @@ import { ProductService } from './services/test.product.service';  //for testing
 
 import { UpdateMRPComponent } from './update-mrp/update-mrp.component';
 import { UpdatePRateComponent } from './stock-report/update-prate.component';
+import { UpdateOnlinePaymentsComponent } from './dailycashtrans/update-online-payments-received/update-online-payments-received.component';
+import { UpdatePendingDuesComponent } from './dailycashtrans/update-pending-dues/update-pending-dues.component';
 // import * as XLSX from 'xlsx';
 // import * as FileSaver from 'file-saver';
 
@@ -82,6 +84,13 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputText, InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { ChartModule } from 'primeng/chart';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { RouterModule } from '@angular/router';
+import { ItemDetailsComponent } from './itemdetails/itemslist.component'
+import { ShowitemsComponent } from './itemdetails/showitems/showitems.component';
+import { EdititemComponent } from './itemdetails/edititem/edititem.component'
+import { PaginatorModule } from 'primeng/paginator';
+import { ImageModule } from 'primeng/image';
 
 @NgModule({
   declarations: [
@@ -90,12 +99,13 @@ import { ChartModule } from 'primeng/chart';
     WeeklyReportComponent,WeeklyItemsCountComponent, DemoComponent,
     //AllOrdersComponent,
     AlertComponent, HomeComponent,SalesReportByItemComponent, StockReportComponent,UpdateMRPComponent,UpdatePRateComponent,
+    UpdatePendingDuesComponent,UpdateOnlinePaymentsComponent,ItemDetailsComponent,ShowitemsComponent,EdititemComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     CommonModule,
-    CoreModule,
+    CoreModule,RouterModule,
     SharedModule,
     HttpClientModule,
     BrowserAnimationsModule,
@@ -107,7 +117,7 @@ import { ChartModule } from 'primeng/chart';
     CurrencyPipe,
     TableModule,InputTextModule,TagModule,
     IconFieldModule,InputIconModule,DropdownModule,FormsModule,MultiSelectModule,CardModule,
-    ButtonModule,ToastModule,RippleModule,AvatarModule,CalendarModule,ChartModule,
+    ButtonModule,ToastModule,RippleModule,AvatarModule,CalendarModule,ChartModule,RadioButtonModule,PaginatorModule,ImageModule,
   ],
   providers: [SharedService, provideAnimationsAsync(),provideNativeDateAdapter(),
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

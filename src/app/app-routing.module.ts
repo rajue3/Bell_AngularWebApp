@@ -16,6 +16,10 @@ import { SalesReportByItemComponent } from './sales-report/sales-report-byitem.c
 import { StockReportComponent } from './stock-report/stock-report.component';
 import { UpdateMRPComponent } from './update-mrp/update-mrp.component';
 import { UpdatePRateComponent } from './stock-report/update-prate.component';
+import { UpdateOnlinePaymentsComponent } from './dailycashtrans/update-online-payments-received/update-online-payments-received.component';
+import { UpdatePendingDuesComponent } from './dailycashtrans/update-pending-dues/update-pending-dues.component';
+import { ItemDetailsComponent } from './itemdetails/itemslist.component'
+import { EdititemComponent } from "./itemdetails/edititem/edititem.component";
 
 const accountModule = () => import('./account/account.module').then(x => x.AccountModule);
 const usersModule = () => import('./users/users.module').then(x => x.UsersModule);
@@ -35,7 +39,11 @@ const routes: Routes = [
   { path: 'stockdetails', component: StockReportComponent,canActivate: [AuthGuard]},
   { path: 'updatemrp', component: UpdateMRPComponent,canActivate: [AuthGuard]},
   { path: 'updateprate', component: UpdatePRateComponent,canActivate: [AuthGuard]},
-  
+  { path: 'updateonlinepayments', component: UpdateOnlinePaymentsComponent,canActivate: [AuthGuard]},
+  { path: 'updatesalesmandues', component: UpdatePendingDuesComponent,canActivate: [AuthGuard]},
+  { path: 'updateitems', component: ItemDetailsComponent,canActivate: [AuthGuard]},
+  { path: 'items/:id', component: EdititemComponent },
+    
   { path: 'demo', component: DemoComponent},
   { path: 'table-frozen-col', component: TableFrozenColumnsDemo},
   //{ path: 'orders', component: CustomOrdersComponent},

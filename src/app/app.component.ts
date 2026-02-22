@@ -60,8 +60,9 @@ export class AppComponent {
           //this.messageService.add({ severity: 'error', summary: 'Alert', detail: response.length + ' Item(s) running out of stock... View Stock details for more details and place an order.', sticky: true });
           //this.messageService.add({ severity: 'error', summary: 'Alert', detail: response.length + ' Item(s) running out of stock... View Stock details for more details and place an order.<a href=/stockdetails>Click here</a>' });
           if (!this.visible) {
-            this.messageService.add({ key: 'confirm', sticky: false, severity: 'error', summary: ' Few item(s) running out of stock... \n Please click on \'View Stock\' to navigate to Stock details.' });
-            this.visible = true;
+            //TODO: commenting below lines to stop showing alerts everytime. If client requests we can enable.  
+            //this.messageService.add({ key: 'confirm', sticky: false, severity: 'error', summary: ' Few item(s) running out of stock... \n Please click on \'View Stock\' to navigate to Stock details.' });
+            //this.visible = true;
            }
 
         }

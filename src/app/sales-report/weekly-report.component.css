@@ -33,7 +33,7 @@
   color:white;
  }
 
-.table-td
+.table-td 
 {
   border: 1px solid black;
   border-radius: 10px;
@@ -114,3 +114,22 @@ th.mat-mdc-header-cell {
 #transparentScrollbarDiv::-webkit-scrollbar-corner {
   background-color: transparent;
 }
+
+.customer-controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.customer-control {
+  min-width: 120px;
+  flex: 1 1 180px;
+  margin-bottom: 8px;
+}
+
+select {
+  max-width: 100%;
+  min-width: 120px;
+  width: auto;
+}
+

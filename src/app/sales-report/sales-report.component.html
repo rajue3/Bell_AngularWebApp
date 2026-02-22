@@ -22,7 +22,6 @@
           <input matInput [matDatepicker]="picker1" [formControl]="billDate1" placeholder="Bill Date"
           class="form-control">
           <mat-hint>
-
             <input type="checkbox"  (click)="changeSearchByDateOption($event)" >&nbsp;By Bill Date</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
@@ -32,7 +31,7 @@
         <!-- <button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">View</button> -->
         <button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">
           <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
-          View Sales</button>
+          View Sales Report</button>
       </td>
     </tr>
     <tr>
@@ -57,7 +56,9 @@
           <th>Profit %</th>
           <th>Total Bills</th>
           <th>Bill Date</th>
-          <th>OPERATOR</th>
+          <th>Operator</th>
+          <th>Cutmet</th>
+          <th>Kiranam</th>
         </tr>
       </thead>
       <tbody>
@@ -72,6 +73,8 @@
           <td>{{dataItem.TotalBills}}</td>
           <td>{{dataItem.BillDate}}</td>
           <td>{{dataItem.UserName}}</td>
+          <td>{{dataItem.Cutmet}}</td>
+          <td>{{dataItem.Kiranam}}</td>
         </tr>
         <tr *ngIf="filteredItems.length==0"><td colspan="4" style="color:red;font-weight: bold;text-align: center;">
           No data found. Please change Area and Bill Date.</td></tr>

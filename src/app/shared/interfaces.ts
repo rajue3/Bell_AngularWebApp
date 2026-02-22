@@ -24,6 +24,19 @@ export interface ItemDetails {
   MinOrderAlert: number;
   ActionDate: string;
 }
+export interface BellItemList {
+  ID?: string;
+  ITEMNAME: string;
+  MRP: string;
+  RATE: string;
+  IMAGEURL?: string;
+  IMAGEURLNEW?: string;
+  PACKINGTYPE?: string;
+  TOTALITEMSINPACK?: string;
+  TOTALITEMSINCARTON?: string;
+  CATEGORY?: string;
+  DESCRIPTION?: string;
+}
 export class tblSalesReport
   {
       Area?:string;
@@ -34,6 +47,9 @@ export class tblSalesReport
       Profit_Percent:any;
       TotalBills?:Int16Array;
       UserName?:string;
+      Cutmet?:string;
+      Kiranam?:string;
+      Others?:string;
   }
 export interface IitemDetailsResponse {
   status: boolean;
@@ -119,7 +135,9 @@ export interface Areas {
   Shop: string;
   Customer: string;
 }
-
+export interface Categories {
+  category: string;
+}
 export interface Shops {
   shopname: string;
 }

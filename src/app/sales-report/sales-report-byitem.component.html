@@ -68,7 +68,10 @@
         <br/>
         <button class="btn btn-primary" style="border-color: red;" (click)="ViewWeekWiseAreaClicked('weekwisebyarea')">
           <span *ngIf="submitting0" class="spinner-border spinner-border-sm me-1"></span>
-          Week Wise View by Area&nbsp;&nbsp;</button>&nbsp;&nbsp;
+          Week Wise Chart by Area&nbsp;&nbsp;</button>&nbsp;&nbsp;
+        <button class="btn btn-primary" style="border-color: red;" (click)="ViewMonthWiseAreaClicked('monthlyitemwisesales')">
+          <span *ngIf="submitting01" class="spinner-border spinner-border-sm me-1"></span>
+          Monthly Chart by Area&nbsp;&nbsp;</button>&nbsp;&nbsp;
         <button class="btn btn-primary" (click)="ViewByAreaClicked('byarea')">
           <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
           View by Area&nbsp;&nbsp;</button>&nbsp;&nbsp;
@@ -98,6 +101,11 @@
   <!-- <div class="card" style="background: #0000000e;">
       <p-chart type="bar" [data]="ChartData" [options]="ChartOptions" />
   </div> -->
+  <div id="ChartGrid1" [hidden]="!showChart">
+  <div class="card">
+      <p-chart type="bar" [data]="ChartData" [options]="ChartOptions" />
+  </div>
+  </div>
 
   <!-- <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="500px"
         dataKey="id" [rows]="10" selectionMode="single" [columns]="cols"

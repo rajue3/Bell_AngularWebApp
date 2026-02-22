@@ -1,30 +1,38 @@
     <h4 style="text-align: center;">Report1 :: Customer Details by Line and Shops </h4>
     <div class="card">
-      <div class="row">
-        <div class="col-sm-2">
+      <div class="row flex-wrap customer-controls-row">
+        <div class="col-sm-3 customer-control">
           <label class="form-label">Line </label><br/>
-          <select [(ngModel)]="selectedLine" name="matArea" (change)="bindAreasList(selectedLine)"
-           style="width: 220px;height: 25px;">
+          <select [(ngModel)]="selectedLine" name="matArea" 
+          (change)="bindAreasList(selectedLine)">
            <option value="all" >--All--</option>
             <option *ngFor="let area of objLines" value={{area.Line}}> {{area.Line}} </option>
           </select>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-2 customer-control">
           <label class="form-label">Area</label><br/>
           <select [(ngModel)]="selectedArea2" name="matArea" (change)="bindShopNames(selectedArea2)"
-           style="width: 220px;height: 25px;">
+           >
            <option value="all" >--All--</option>
             <option *ngFor="let area of objAreas" value={{area.Area}}> {{area.Area}} </option>
           </select>
         </div>
-          <div class="col-sm-2">
+          <div class="col-sm-2 customer-control">
             <label class="form-label">Shop </label><br/>
-          <select [(ngModel)]="selectedShop" name="matShop" style="width: 220px;height: 25px;">
+          <select [(ngModel)]="selectedShop" name="matShop">
             <option value="all" >--All--</option>
             <option *ngFor="let shop of objShops" value={{shop.Shop}} > {{shop.Shop}} </option>
           </select>
         </div>
-        <div class="col-sm-4" style="vertical-align: bottom;align-items: baseline;">
+        <div class="col-sm-2 customer-control">
+          <label class="form-label">Category</label><br/>
+          <select [(ngModel)]="selectedCategory" name="matCategory" >
+           <option value="all" >--All--</option>
+            <option value="CUTMET">CUTMET</option>
+            <option value="KIRANAM">KIRANAM</option>
+          </select>
+        </div>
+        <div class="col-sm-3 customer-control" style="vertical-align: bottom;align-items: baseline;">
           <br/>
             <button class="btn btn-primary" (click)="generateReport('Active Shops')">
               <span *ngIf="submitting4" class="spinner-border spinner-border-sm me-1"></span>
@@ -33,10 +41,13 @@
         </div>
       </div>
       <div class="row">
+                 
+      </div>
+      <div class="row">
         <div class="col-sm-8" style="vertical-align: bottom;align-items: baseline;">
             <br/>
             <div style="text-align: left;">
-              <h4><b>{{ reportName }} &nbsp; | </b> Area : <b> {{selectedArea2}} </b> | Shop Name : <b> {{selectedShop}} </b> :: {{reportHeader}} </h4>
+              <h4><b>{{ reportName }} &nbsp; | </b> Area : <b> {{selectedArea2}} </b> | Shop Name : <b> {{selectedShop}} </b> | Group : <b> {{selectedCategory}} </b> :: {{reportHeader}} </h4>
             </div>
             <label *ngIf="!IsValid" style="color:red;font-weight: bold;">
               <div [innerHTML]="errorMsg"></div>

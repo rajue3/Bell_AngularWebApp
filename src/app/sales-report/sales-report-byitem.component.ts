@@ -75,9 +75,9 @@ export class  SalesReportByItemComponent {
   chartdatasets!: objChartDatasets[];
   dynamicBGColor!:string;
   dynamicBorderColor!:string;
-
   ChartData: any;
   ChartOptions: any;
+  showChart:boolean = false;
 
   billDate1 = new FormControl(new Date());
   billDate2 = new FormControl(new Date());
@@ -113,6 +113,7 @@ export class  SalesReportByItemComponent {
   date2:any;
   form!: FormGroup;
   submitting0:boolean = false;
+  submitting01:boolean = false;
   submitting1:boolean = false;
   submitting2:boolean = false;
   submitting3:boolean = false;
@@ -164,7 +165,7 @@ export class  SalesReportByItemComponent {
 
   ngAfterViewInit() {  }
 
-  generateChartDataFromDataTable()
+  generateChartDataFromDataTable(strReportType:any)
   {
     this.dataTable = JSON.parse(this.dataSource);
     //const obj = JSON.parse(this.dataSource);
@@ -178,7 +179,7 @@ export class  SalesReportByItemComponent {
     let varChartdataset : objChartDatasets;
     categories = [];
     console.log('this.dynamicColumns.length',this.dynamicColumns.length)
-    for(var col=2;col<this.dynamicColumns.length;col++){
+    for(var col=3;col<this.dynamicColumns.length;col++){
         coldata = [];
         categories = [];
         for(var item in this.dataTable){
@@ -188,11 +189,16 @@ export class  SalesReportByItemComponent {
           //console.log('Dynamic table rows =', this.dataTable[item][row]); //is working
         }
         this.getRandomRGB();
-        varChartdataset = {label:this.dynamicColumns[col],data:coldata,borderColor:this.dynamicBorderColor,backgroundColor:this.dynamicBGColor}
+        if (strReportType == "monthlyitemwisesales")
+          varChartdataset = {label:this.extractMonthYear(this.dynamicColumns[col]),data:coldata,borderColor:this.dynamicBorderColor,backgroundColor:this.dynamicBGColor}
+        else
+          varChartdataset = {label:this.dynamicColumns[col],data:coldata,borderColor:this.dynamicBorderColor,backgroundColor:this.dynamicBGColor}
+
+        //varChartdataset = {label:this.dynamicColumns[col],data:coldata,borderColor:this.dynamicBorderColor,backgroundColor:this.dynamicBGColor}
         this.chartdatasets.push(varChartdataset);
       }
     this.chartdata = {labels:categories,datasets:this.chartdatasets};
-    console.log('Chart datasets =', this.chartdata);
+    //console.log('Chart datasets =', this.chartdata);
     this.BindChartData(this.chartdata);
     
       //<td *ngFor="let item of row | keyvalue">{{item.value}}</td>
@@ -208,8 +214,19 @@ export class  SalesReportByItemComponent {
   this.dynamicBGColor=`rgba(${r}, ${g}, ${b},${op})`;
   console.log('getRandomRGB called.',this.dynamicBorderColor)
 }
+  // TypeScript: Angular Component or Service
+  extractMonthYear(dateStr: string): string {
+    const date = new Date(dateStr.substring(0,9));
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
 
+    const options: Intl.DateTimeFormatOptions = { month: 'short' };
+    const month = new Intl.DateTimeFormat('en-US', options).format(date);
+    const year = date.getFullYear().toString().slice(-2); // Get last two digits
 
+    return `${month}-${year}`;
+  }
   BindChartData(varChartdata:objChartData) {
     const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
@@ -412,12 +429,22 @@ export class  SalesReportByItemComponent {
     this.selectedReportName = 'Weeek wise returns Percentage(%)';
     this.submitting4 = true;
     this.showGrid2 = false;
+    this.showChart=false;
     this.showHideGrid = "none";
     this.ViewClicked(strType);
   }
   ViewWeekWiseAreaClicked(strType:any) {
-    this.selectedReportName = 'Week Wise by Area';
+    this.selectedReportName = 'Week Wise Chart by Area';
     this.submitting0 = true;
+    this.showChart=true;
+    this.showGrid2 = false;
+    this.showHideGrid = "none";
+    this.ViewClicked(strType);
+  }
+  ViewMonthWiseAreaClicked(strType:any) {
+    this.selectedReportName = 'Month Wise Chart by Area';
+    this.submitting01 = true;
+    this.showChart=true;
     this.showGrid2 = false;
     this.showHideGrid = "none";
     this.ViewClicked(strType);
@@ -426,10 +453,12 @@ export class  SalesReportByItemComponent {
     this.selectedReportName = 'View by Area';
     this.submitting1 = true;
     this.showGrid2 = false;
+    this.showChart=false;
     this.showHideGrid = "none";
     this.ViewClicked(strType);
   }
   ViewByShopClicked(strType:any) {
+    this.showChart=false;
     this.selectedReportName = 'View by Shop';
     if (!this.selectedAreas)
     {
@@ -453,6 +482,7 @@ export class  SalesReportByItemComponent {
     //this.submitting2 = false;
   }
   ViewByDateClicked(strType:any) {
+    this.showChart=false;
     this.selectedReportName = 'View by Date';
     //console.log ('selected Area/Line = ',this.selectedAreas);
     //alert(this.selectedItems);
@@ -471,6 +501,7 @@ export class  SalesReportByItemComponent {
 
   ShowLinesWithNoSales()
   {
+    this.showChart=false;
     this.grandTotalQty = 0;
     var totalQty:any;
     this.selectedArea = 'all';
@@ -619,6 +650,7 @@ export class  SalesReportByItemComponent {
       if (!response) {
         //console.log('request if null =', response);
          this.submitting0 = false;
+         this.submitting01 = false;
          this.submitting1 = false;
          this.submitting2 = false;
          this.submitting3 = false;
@@ -644,7 +676,8 @@ export class  SalesReportByItemComponent {
             //console.log('newcol=',newCol);
             this.cols.push(newCol);
           }
-          //this.generateChartDataFromDataTable();
+          if (strType=='weekwisebyarea' || strType=='monthlyitemwisesales')
+          { this.generateChartDataFromDataTable(strType); }
 
           //To show Total Qty count for only if all Area selected.
           if (strType =='byarea' || strType == 'weekwisebyarea') //this.selectedArea == 'all'
@@ -710,6 +743,7 @@ formatCurrency(value: number) {
     HideLoader(strReportName:any)
   {
       this.submitting0 = false;
+      this.submitting01 = false;
       this.submitting1 = false;
       this.submitting2 = false;
       this.submitting3 = false;

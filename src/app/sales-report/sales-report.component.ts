@@ -106,19 +106,20 @@ export class SalesReportComponent {
       this.dataSource = this.filteredItems = response;
       sessionStorage.setItem('Report1_DataSource',JSON.stringify(this.filteredItems));
        console.log(response);
+       this.submitting = false;
      },
      (err: any) => console.log(err),
      () => console.log('Retrieved LS Items using getLSTotalSalesByArea() '));
-     this.submitting = false;
+     //this.submitting = false;
   }
   onRowClicked(rowItem: any)
   {
     //alert(rowItem.Area);
     const dialogRef = this.dialog.open(ItemsByCustIDComponent, {
       data: {reportName:"itemsbyareadate",selectedArea: rowItem.Area, selectedDate: formatDate(rowItem.BillDate,'dd-MMM-yyyy','en-US'),totalBills:rowItem.TotalBills},
-      height: '500px',
+      height: '400px',
 	    width: '450px',
-	    position: {left:'2px' }
+	    position: {left:'100px' }
     });
   }
   filterChanged(filterText: string) {
