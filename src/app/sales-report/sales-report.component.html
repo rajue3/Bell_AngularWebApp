@@ -22,16 +22,25 @@
           <input matInput [matDatepicker]="picker1" [formControl]="billDate1" placeholder="Bill Date"
           class="form-control">
           <mat-hint>
-            <input type="checkbox"  (click)="changeSearchByDateOption($event)" >&nbsp;By Bill Date</mat-hint>
+            <input type="checkbox" (click)="changeSearchByDateOption($event)" >&nbsp;By Bill Date</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
           <mat-datepicker #picker1></mat-datepicker>
         </mat-form-field>        
       </td>
       <td>
+        <mat-form-field  style="width: 220px;" class="form-control">
+          <input matInput [matDatepicker]="picker2" [formControl]="billDate2" placeholder="Bill Date"
+          class="form-control">
+          <mat-hint>To Date</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>        
+      </td>
+      <td>
         <!-- <button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">View</button> -->
-        <button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">
+        &nbsp;<button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">
           <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
-          View Sales Report</button>
+          View </button>
       </td>
     </tr>
     <tr>
@@ -49,16 +58,16 @@
     <table class="table table-hover">
       <thead >
         <tr>
-          <th>Area</th>
-          <th>Tot Purch Amt</th>
-          <th>Tot Sales Amt</th>
-          <th>Profit Amt</th>
-          <th>Profit %</th>
-          <th>Total Bills</th>
-          <th>Bill Date</th>
-          <th>Operator</th>
-          <th>Cutmet</th>
-          <th>Kiranam</th>
+          <th>AREA</th>
+          <th>TOT PUR AMT</th>
+          <th>TOT SAL AMT</th>
+          <th>PROFIT AMT</th>
+          <th>PROFIT %</th>
+          <th>TOTAL BILLS</th>
+          <th>BILL DATE</th>
+          <th>OPERATOR</th>
+          <th>CUTMET</th>
+          <th>KIRANAM</th>
         </tr>
       </thead>
       <tbody>

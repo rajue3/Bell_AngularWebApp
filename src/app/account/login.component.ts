@@ -41,7 +41,6 @@ export class LoginComponent implements OnInit {
     }
     onSubmit() {
         this.submitted = true;
-
         // reset alerts on submit
         this.alertService.clear();
 
@@ -55,24 +54,37 @@ export class LoginComponent implements OnInit {
         else
           this.usertype='user';
 
-          return this.accountService.login(this.f['username'].value, this.f['password'].value,this.usertype)
+          this.accountService.login(this.f['username'].value, this.f['password'].value,this.usertype)
           .subscribe((response: any) => {
             //alert(response);
-            //console.log(response);
             this.user = response;            
+            console.log(this.user);
             if (this.user.id > 0)
             {
               this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Login successful...' });
               //this.user.userType = 'admin';
               const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+              console.log('Return Url :', returnUrl);
               this.router.navigateByUrl(returnUrl);
+              return true;
+            }
+            else
+            {
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Invalid username' });
+              this.loading = false;
+              console.log('Login failed. Invalid username!');
+              return false;
             }
             //console.log(response);
           //alert('refresh clicked on main page. count=' + this.customers.length);
           //alert(this.customers[0].AREA);
           this.loading = false;
         },
-          (err: any) => console.log(err),
+          (err: any) => {
+              this.loading = false;
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error || 'Invalid username' });
+              console.error('Login error:', err);
+          },
           () => console.log('getCustomersPage() retrieved customers'));
     }
 

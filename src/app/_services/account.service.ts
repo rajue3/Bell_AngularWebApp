@@ -31,18 +31,14 @@ export class AccountService {
         //return this.http.post<User>(`${environment.apiUrl}/users/authenticate`, { username, password })
           return this.http.get<User>(`${this.sharedService.APIUrl}/bell/authenticate/` + username + '/' + password+'/'+usertype, { })
             .pipe(map(user => {
-                if (!user)
-                  {
-                    return throwError(() => ({ error: 'Invalid username or password!' }))
-                      .pipe(materialize(), delay(500), dematerialize()); // call materialize and dematerialize to ensure delay even if an error is thrown (https://github.com/Reactive-Extensions/RxJS/issues/648);
-                  }
-                user.token = 'fake-jwt-token'
+                if (!user || user.id === 0) {
+                    throw new Error('Invalid username or password!');
+                }
+                user.token = 'fake-jwt-token';
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 localStorage.setItem('user', JSON.stringify(user));
                 //sessionStorage.setItem('user', JSON.stringify(user));
                 this.userSubject.next(user);
-                //console.log("Logged in User details :");
-                //console.log(user);
                 return user;
             }));
     }
@@ -76,7 +72,7 @@ export class AccountService {
             }));
     }
 
-    getById(selectedID: string) {
+    getById(selectedID: number) {
         //return this.http.get<User>(`${environment.apiUrl}/users/${id}`);
         return this.http.get<any[]>(`${this.sharedService.APIUrl}/bell/getallusers/${selectedID}`, { })
         .pipe(map(userdetails => {
@@ -86,12 +82,12 @@ export class AccountService {
           //alert(userdetails[0].firstname);
           //const { id, username, firstname, lastname } = userdetails[0];
           //return { id, username, firstname, lastname };
-          return { id:selectedID, username:userdetails[0].username, firstName:userdetails[0].firstname, lastName:userdetails[0].firstname };
+          return { id:selectedID, username:userdetails[0].username, firstName:userdetails[0].firstname, lastName:userdetails[0].lastname };
 
       }));
     }
 
-    update(id: string, params: any) {
+    update(id: number, params: any) {
         //return this.http.put(`${environment.apiUrl}/users/${id}`, params)
         params.id = id;
         //console.log(params);
@@ -111,7 +107,7 @@ export class AccountService {
             }));
     }
 
-    delete(id: string) {
+    delete(id: number) {
         //return this.http.delete(`${environment.apiUrl}/users/${id}`)
         return this.http.delete<any>(`${this.sharedService.APIUrl}bell/deleteuser/${id}`)
             .pipe(map(x => {

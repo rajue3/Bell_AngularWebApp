@@ -12,7 +12,7 @@
       </button>
       
       <div class="collapse navbar-collapse" id="navbarCollapse">
-        <div class="navbar-nav">
+        <div class="navbar-nav" *ngIf="user.usertype=='admin'">
           <a class="nav-item nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
           <a class="nav-item nav-link" routerLink="/users" routerLinkActive="active" *ngIf="user.usertype=='admin'">Users</a>
           <!-- <a class="nav-item nav-link" routerLink="/admin" routerLinkActive="active">Admin</a> -->
@@ -22,7 +22,7 @@
           <a class="btn btn-primary" routerLink="/weeklyrepo2" routerLinkActive="active">Total Items Sale by Date</a>&nbsp;
           <a class="btn btn-primary" routerLink="/salebyitem" routerLinkActive="active">Sales by Item Name </a>&nbsp;
           <a class="btn btn-primary" routerLink="/itemwise-sales" routerLinkActive="active">ItemWise Sales</a>&nbsp;
-          <a class="btn btn-primary" routerLink="/stockdetails" routerLinkActive="active">Stock details </a>&nbsp;
+          <!-- <a class="btn btn-primary" routerLink="/stockdetails" routerLinkActive="active">Stock details </a>&nbsp; -->
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -46,12 +46,14 @@
               Action
             </button>
             <ul class="dropdown-menu">
+              <li><a class="dropdown-item" routerLink="/stockdetails">Stock Details</a></li>
               <li><a class="dropdown-item" routerLink="/updateprate">Update Purchase Rate & Min Order</a></li>
-              <li><a class="dropdown-item"  routerLink="/updateonlinepayments">Online Payments Received from Salesman</a></li>
-              <li><a class="dropdown-item"  routerLink="/updatesalesmandues">Pending dues Received from Party</a></li>
-              <!-- <li><a class="dropdown-item"  routerLink="">-------------------</a></li> -->
-              <li><a class="dropdown-item"  routerLink="/updateitems">Edit Item Details</a></li>
-              <!-- <li><a class="dropdown-item"  routerLink="/updatemrp">Test Edit Items</a></li> -->
+              <li><a class="dropdown-item" routerLink="/updateonlinepayments">Online Payments Received from Salesman</a></li>
+              <li><a class="dropdown-item" routerLink="/updatesalesmandues">Pending dues Received from Party</a></li>
+              <!-- <li><a class="dropdown-item" routerLink="">-------------------</a></li> -->
+              <li><a class="dropdown-item" routerLink="/updateitems">Edit Item Details</a></li>
+              <!-- <li><a class="dropdown-item" (click)="downloadMobileApp()">Download Mobile App</a></li> -->
+              <!-- <li><a class="dropdown-item" routerLink="/updatemrp">Test Edit Items</a></li> -->
               <!-- <li><a class="dropdown-item" href="#">Something else here</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="#">Separated link</a></li> -->
@@ -71,6 +73,9 @@
               <li><a class="dropdown-item" style="color:blue" routerLink="/sales" href="#">Sales Report</a></li>
             </ul>            
           </li>  -->
+        </div>
+        <div class="navbar-nav">
+          &nbsp;<a class="btn btn-primary" (click)="downloadMobileApp()">Download Mobile App</a>&nbsp;
         </div>
           <div class="navbar-nav ms-auto">
             <button class="btn btn-link nav-item nav-link" style="color: aliceblue;">Welcome! {{user.username}}</button>

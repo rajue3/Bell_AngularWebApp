@@ -1,0 +1,116 @@
+<!-- Button trigger modal -->
+<!--<button type="button" class="btn btn-primary float-right m-2" data-bs-toggle="modal" data-bs-target="#ModelStatusUpdate"
+        (click)="AddStudent()" data-backdrop="static" data-keyboard="false">
+  Add Student
+</button>-->
+<!--<h2 class="modal-title" style="text-align:center">All Mobile Orders</h2>-->
+<!-- Modal -->
+<!--<div class="modal" id="ModelEditItem" tabindex="-1" aria-labelledby="ModelEditItemLabel" [ngStyle]="{'display':VarDisplayModelStatus}">
+  <div class="modal-dialog" style="width:850px">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        {{modalTitle}}-->
+        <!--<button type="button" #closebutton class="btn-close" (click)="closeUpdateStatusModal()" data-bs-dismiss="modal" aria-label="Close"></button>-->
+        <!--<button type="button" class="close" aria-label="Close" (click)="closeUpdateStatusModal()"><span aria-hidden="true" style="color:white">&times;</span></button>
+
+      </div>
+      <div class="modal-body" style="width:350px;height:300px">
+        <app-edititem [selectedItem]="selectedItem" *ngIf="activateAddEditStuCom">
+        </app-edititem>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="closeUpdateStatusModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>-->
+<!-- End of edit Modal -->
+
+<!-- Top paginator -->
+<p-paginator 
+  [rows]="10" 
+  [totalRecords]="objItemsList.length" 
+  (onPageChange)="paginate($event)">
+</p-paginator>
+
+<div class="table-responsive" style="width:95%;">
+  <table class="table table-sm table-condensed table-striped table-hover">
+    <thead>
+      <tr class="table-primary">
+        <th>#</th>
+        <th>Image</th>
+        <th>Item Name</th>
+        <th>MRP</th>
+        <th>Rate</th>
+        <th>Packets</th>
+        <th>Carton Size</th>
+        <th>Category</th>
+        <th>Packing Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dataItem of pagedItems; let i = index">
+        <td>{{ (currentPage * rowsPerPage) + i + 1 }}</td>
+        <td>
+          <img [src]="dataItem.IMAGEURLNEW?.trim()" 
+               alt="{{dataItem.ITEMNAME}}" 
+               width="100" height="100"
+               (error)="dataItem.IMAGEURLNEW='assets/images/bellbrandlogo.png'" />
+        </td>
+        <td> <a [routerLink]="['/items', dataItem.ID]" [queryParams]="{ page: currentPage }">
+          {{ dataItem.ITEMNAME }}  </a>
+        </td>
+        <td>{{ formatNumber(dataItem.MRP) }}</td>
+        <td>{{ formatNumber(dataItem.RATE) }}</td>
+        <td>{{ dataItem.TOTALITEMSINPACK }}</td>
+        <td>{{ dataItem.TOTALITEMSINCARTON }}</td>
+        <td>{{ dataItem.CATEGORY }}</td>
+        <td>{{ dataItem.PACKINGTYPE }}</td>
+        <td>{{ dataItem.DESCRIPTION }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Bottom paginator -->
+<p-paginator 
+  [rows]="10" 
+  [totalRecords]="objItemsList.length" 
+  (onPageChange)="paginate($event)">
+</p-paginator>
+
+<!--<div class="table-responsive" style="width:95%;">
+   <table class="table table-sm table-condesed table-striped table-hover">
+    <thead>
+      <tr class="table-primary">
+        <th>#</th>
+        <th>Image</th>
+        <th>Item Name</th>
+        <th>MRP</th>
+        <th>Rate</th>
+        <th>Packets</th>
+        <th>Carton Size</th>
+        <th>Category</th>
+        <th>Packing Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dataItem of objItemsList;let i=index;" style="line-height: 14px;vertical-align: middle;">
+        <td>{{i+1}}.</td>
+        <td>          
+          <p-image [src]=dataItem.IMAGEURLNEW alt="Image" width="100" height="100" [preview]="true" (error)="dataItem.IMAGEURLNEW='assets/images/bellbrandlogo.png'" />
+        </td>
+        <td><a [routerLink]="['/items',dataItem.ID]">{{dataItem.ITEMNAME}}</a></td>
+        <td>{{dataItem.MRP}}</td>
+        <td>{{dataItem.RATE}}</td>
+        <td>{{dataItem.TOTALITEMSINPACK}}</td>
+        <td>{{dataItem.TOTALITEMSINCARTON}}</td>
+        <td>{{dataItem.CATEGORY}}</td>
+        <td>{{dataItem.PACKINGTYPE}}</td>
+        <td>{{dataItem.DESCRIPTION}}</td>
+      </tr>
+    </tbody>
+  </table> 
+</div> -->

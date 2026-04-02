@@ -48,8 +48,10 @@ export class SalesReportComponent {
   date1:any;
   date2:any;
   billDate1 = new FormControl(new Date());
+  billDate2 = new FormControl(new Date());
   clickedRows = new Set<tblSalesReport>();
   searchByBillDate:boolean = false;
+  searchBy : string = '';
   submitting = false;
 
   constructor(private router: Router, private dataService: DataService,
@@ -71,11 +73,13 @@ export class SalesReportComponent {
     if (sessionStorage.getItem('Report1_billDate1'))
     {
         let sessionDate1 = new Date(sessionStorage.getItem('Report1_billDate1')!)
+        let sessionDate2 = new Date(sessionStorage.getItem('Report1_billDate2')!)
         this.billDate1 = new FormControl(new Date(sessionDate1));
         this.date1 = this.billDate1;
-        this.date2 = sessionStorage.getItem('Report1_billDate2')!;
+        this.billDate2 = new FormControl(new Date(sessionDate2));
+        this.date2 = this.billDate2;        
+        this.searchBy = sessionStorage.getItem('Report1_SearchBy')!;
     }
-
   }
 
   BindReportFromSession()
@@ -92,16 +96,19 @@ export class SalesReportComponent {
     this.submitting = true;
     this.date1 = this.billDate1.value;
     this.date1 = formatDate(this.date1,'dd-MMM-yyyy','en-US');
+    this.date2 = this.billDate2.value;
+    this.date2 = formatDate(this.date2,'dd-MMM-yyyy','en-US');
     if (this.searchByBillDate)
-      this.date2 = 'BILLDATE';
+      this.searchBy = 'BILLDATE';
     else
-      this.date2 = 'ACTIONDATE';
+      this.searchBy = 'ACTIONDATE';
 
     sessionStorage.setItem('Report1_Area',this.selectedArea);
     sessionStorage.setItem('Report1_billDate1',JSON.stringify(this.date1));
-    sessionStorage.setItem('Report1_billDate2',this.date2);
+    sessionStorage.setItem('Report1_billDate2',JSON.stringify(this.date2));
+    sessionStorage.setItem('Report1_SearchBy',this.searchBy);
 
-    this.sharedService.getLSTotalSalesByArea(strArea,this.date1,this.date2).subscribe((response: tblSalesReport[]) => {
+    this.sharedService.getLSTotalSalesByArea(strArea,this.date1,this.date2,this.searchBy).subscribe((response: tblSalesReport[]) => {
       //this.dataSource = response;
       this.dataSource = this.filteredItems = response;
       sessionStorage.setItem('Report1_DataSource',JSON.stringify(this.filteredItems));

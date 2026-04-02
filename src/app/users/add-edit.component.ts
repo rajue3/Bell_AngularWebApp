@@ -12,7 +12,7 @@ export class AddEditComponent implements OnInit {
 
    //@Input() userdetails: any[] = [];
     form!: FormGroup;
-    id?: string;
+    id?: number;
     title!: string;
     loading = false;
     submitting = false;

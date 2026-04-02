@@ -1,0 +1,28 @@
+.modal-dialog {
+  overflow-y: initial !important
+}
+
+.modal-body {
+  height: 80vh;
+  overflow-y: auto;
+}
+
+
+table, th, td {
+
+  border-collapse: collapse;
+}
+.table-striped{
+  font-size: 12px;
+}
+/*th, td {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  padding-right: 40px;
+}
+    border: 1px solid black;
+
+*/
+
+

@@ -1,0 +1,105 @@
+<br>
+<div class="card w-75">
+  <div class="card-header">Change image for : : {{ item.ITEMNAME }}</div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-3">
+        <!-- <img src={{item.IMAGEURL}} width="100" height="100" /> -->
+        <p-image src={{item.IMAGEURLNEW}}  alt={{item.ITEMNAME}} width="100" height="100" [preview]="true" />
+      </div>
+      <div class="col-sm-3">
+        <!-- <img id="blah" [src]="imageSrc" width="100" height="100" alt="Selet New image" /> -->
+        <p-image id="blah" [src]=imageSrc  alt="Image" width="100" height="100" [preview]="true" alt="Selet New image" />
+      </div>
+      <div class="col-sm-3">
+        <label class="btn btn-default p-0">
+          <input type="file" accept="image/x-png,image/gif,image/jpeg" (change)="selectFile($event)" />
+        </label>
+      </div>
+      <div class="col-sm-3">
+        <button class="btn btn-success btn-sm float-right"
+                [disabled]="!selectedFiles"
+                (click)="upload()"> Upload Image
+        </button>&nbsp;
+        <!-- <a routerLink="/admin" class="btn btn-primary" role="button">Cancel</a> -->
+        <button type="button" class="btn btn-secondary" (click)="cancel($event)">Cancel</button>        
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div class="card w-75">
+     <div class="card-header">Update Item details</div>
+     <form (ngSubmit)="submit()" #customerForm="ngForm" class="editForm" novalidate>
+      <div class="card-body">
+          <div class="row">
+          <div class="col-sm-3">
+            <label>Item Name</label>
+            <input type="text" class="form-control" name="ItemName" [(ngModel)]="item.ITEMNAME" #ITEMNAME="ngModel" required>
+            <div class="alert alert-danger" [hidden]="ITEMNAME.untouched || ITEMNAME.valid">Item Name is required</div>
+          </div>
+          <div class="col-sm-3">
+            <label>MRP</label>
+            <input type="text" class="form-control" name="Mrp" [(ngModel)]="item.MRP" #MRP="ngModel" required>
+            <div class="alert alert-danger" [hidden]="MRP.untouched || MRP.valid">MRP is required</div>
+          </div>
+          <div class="col-sm-3">
+            <label>RATE</label>
+            <input type="text" class="form-control" name="RATE" [(ngModel)]="item.RATE" #RATE="ngModel" value="RATE" required />
+            <div class="alert alert-danger" [hidden]="RATE.untouched || RATE.valid">MRP is required</div>
+          </div>
+        </div>
+          <div class="row">
+            <div class="col-sm-3">
+            <label>CATEGORY</label>
+            <!--<input type="text" class="form-control" name="Category" [(ngModel)]="item.email" #email="ngModel" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" />-->
+            <input type="text" class="form-control" name="CATEGORY" [(ngModel)]="item.CATEGORY" #CATEGORY="ngModel" value="CATEGORY" required />
+            <div class="alert alert-danger" [hidden]="CATEGORY.untouched || CATEGORY.valid">CATEGORY is required and must be valid</div>
+          </div>
+          <div class="col-sm-3">
+            <label>TOTALITEMSINPACK</label>
+            <input type="text" class="form-control" name="TOTALITEMSINPACK" [(ngModel)]="item.TOTALITEMSINPACK" #TOTALITEMSINPACK="ngModel" required>
+            <div class="alert alert-danger" [hidden]="TOTALITEMSINPACK.untouched || TOTALITEMSINPACK.valid">TOTALITEMSINPACK is required</div>
+          </div>
+          <div class="col-sm-3">
+            <label>TOTALITEMSINCARTON</label>
+            <input type="text" class="form-control" name="TOTALITEMSINCARTON" [(ngModel)]="item.TOTALITEMSINCARTON" #TOTALITEMSINCARTON="ngModel" required>
+            <div class="alert alert-danger" [hidden]="TOTALITEMSINCARTON.untouched || TOTALITEMSINCARTON.valid">TOTALITEMSINCARTON is required</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            <label>PACKINGTYPE</label>
+            <input type="text" class="form-control" name="PACKINGTYPE" [(ngModel)]="item.PACKINGTYPE" #PACKINGTYPE="ngModel" required>
+            <div class="alert alert-danger" [hidden]="PACKINGTYPE.untouched || PACKINGTYPE.valid">PACKINGTYPE is required</div>
+          </div>
+          <div class="col-sm-3">
+            <label>Description</label>
+            <input type="text" class="form-control" name="DESCRIPTION" [(ngModel)]="item.DESCRIPTION" #DESCRIPTION="ngModel" required>
+            <div class="alert alert-danger" [hidden]="DESCRIPTION.untouched || DESCRIPTION.valid">Description is required</div>
+          </div>
+          </div>
+
+      </div>
+    <div class="card-footer text-muted">
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="pull-right" *ngIf="!deleteMessageEnabled">
+            <!-- <button class="btn btn-default" (click)="cancel($event)">Cancel</button> -->
+            <a routerLink="/admin" class="btn btn-primary" role="button">Cancel</a>
+            &nbsp;&nbsp;<button type="submit" class="btn btn-success" [disabled]="!customerForm.valid">{{ operationText }}</button>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div *ngIf="item">
+            <div class="alert alert-warning" *ngIf="item.ID && deleteMessageEnabled">
+              Delete selectedItem?&nbsp;&nbsp;<button class="btn btn-danger" (click)="delete($event)">Yes</button>&nbsp;&nbsp;
+              <button class="btn btn-default" (click)="deleteMessageEnabled = false">No</button>
+            </div>
+            <button class="btn btn-danger" *ngIf="item.ID && !deleteMessageEnabled" (click)="deleteMessageEnabled = true">Delete</button>&nbsp;&nbsp;
+          </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>

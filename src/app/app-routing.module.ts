@@ -11,7 +11,7 @@ import { WeeklyReportComponent } from './sales-report/weekly-report.component';
 import { WeeklyItemsCountComponent } from './sales-report/weekly-itemscount.component';
 //import { ViewItemslistComponent } from './orders/view-itemslist/view-itemslist.component';
 import { HomeComponent } from './home/home.component';
-import { AuthGuard } from './_helpers';
+import { AuthGuard, AdminGuard } from './_helpers';
 import { SalesReportByItemComponent } from './sales-report/sales-report-byitem.component';
 import { StockReportComponent } from './stock-report/stock-report.component';
 import { UpdateMRPComponent } from './update-mrp/update-mrp.component';
@@ -27,21 +27,21 @@ const usersModule = () => import('./users/users.module').then(x => x.UsersModule
 const routes: Routes = [
   //{ path: '', redirectTo: '/admin', pathMatch: 'full' },
   { path: '', component: HomeComponent, canActivate: [AuthGuard] },
-  { path: 'users', loadChildren: usersModule, canActivate: [AuthGuard] },
+  { path: 'users', loadChildren: usersModule, canActivate: [AuthGuard, AdminGuard] },
   { path: 'account', loadChildren: accountModule },
 
-  { path: 'cust', component: AdminComponent, canActivate: [AuthGuard]},
-  { path: 'sales', component: SalesReportComponent,canActivate: [AuthGuard]},
-  { path: 'itemwise-sales', component: ItemWiseSalesComponent,canActivate: [AuthGuard]},
-  { path: 'weekly', component: WeeklyReportComponent,canActivate: [AuthGuard]},
-  { path: 'weeklyrepo2', component: WeeklyItemsCountComponent,canActivate: [AuthGuard]},
-  { path: 'salebyitem', component: SalesReportByItemComponent,canActivate: [AuthGuard]},
-  { path: 'stockdetails', component: StockReportComponent,canActivate: [AuthGuard]},
-  { path: 'updatemrp', component: UpdateMRPComponent,canActivate: [AuthGuard]},
-  { path: 'updateprate', component: UpdatePRateComponent,canActivate: [AuthGuard]},
-  { path: 'updateonlinepayments', component: UpdateOnlinePaymentsComponent,canActivate: [AuthGuard]},
-  { path: 'updatesalesmandues', component: UpdatePendingDuesComponent,canActivate: [AuthGuard]},
-  { path: 'updateitems', component: ItemDetailsComponent,canActivate: [AuthGuard]},
+  { path: 'cust', component: AdminComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'sales', component: SalesReportComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'itemwise-sales', component: ItemWiseSalesComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'weekly', component: WeeklyReportComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'weeklyrepo2', component: WeeklyItemsCountComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'salebyitem', component: SalesReportByItemComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'stockdetails', component: StockReportComponent, canActivate: [AuthGuard]},
+  { path: 'updatemrp', component: UpdateMRPComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'updateprate', component: UpdatePRateComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'updateonlinepayments', component: UpdateOnlinePaymentsComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'updatesalesmandues', component: UpdatePendingDuesComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'updateitems', component: ItemDetailsComponent, canActivate: [AuthGuard, AdminGuard]},
   { path: 'items/:id', component: EdititemComponent },
     
   { path: 'demo', component: DemoComponent},

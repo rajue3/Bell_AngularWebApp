@@ -1,0 +1,93 @@
+<h4 style="text-align: center;font-weight: bold;">:: PARTY WISE PENDING DUES ::</h4>
+<!-- <p-button label="Test PrimeNG"></p-button> &nbsp;
+<button pButton pRipple label="Submit" class="p-button-success" style="width: 220px;height: 25px;"> </button> -->
+<div class="card">
+    <p-toast></p-toast>
+    <div class="row">        
+        <!-- <div class="col-sm-2">
+          <label class="form-label" style="color: blue;"> Line </label>&nbsp;&nbsp;
+          <select [(ngModel)]="selectedLine" name="matLine" style="width: 220px;height: 25px;">
+            <option value="all" >--All--</option>
+            <option *ngFor="let line of objLines" value={{line.fieldvalue}}> {{line.fieldvalue}} </option>
+          </select>
+        </div>     
+        <div class="col-sm-2">
+          <label class="form-label">SalesMan</label><br/>
+          <select [(ngModel)]="selectedSalesman" name="matSalesman" style="width: 220px;height: 25px;">
+            <option value="all" >--All--</option>
+            <option *ngFor="let salesman of objSalesman" value={{salesman.fieldvalue}}> {{salesman.fieldvalue}} </option>
+          </select>
+        </div>    -->
+        <div class="col-sm-2">
+          <mat-form-field  style="width: 220px;" class="form-control">
+              <mat-hint>Line Billled Date</mat-hint>
+              <input matInput [matDatepicker]="picker1" [formControl]="billDate1" placeholder="From Date"
+              class="form-control">
+              <mat-datepicker-toggle matIconSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+        </div>
+        <div class="col-sm-2">
+          &nbsp;&nbsp;<button class="btn btn-primary" (click)="ViewAllItemsClicked('all')">
+          <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
+          View Pending dues </button>
+          &nbsp;&nbsp;<button class="btn btn-primary" (click)="SaveDetails()">
+          <span *ngIf="submitting3" class="spinner-border spinner-border-sm me-1"></span>
+          Save All</button>&nbsp;&nbsp;      
+        </div>
+    </div>   
+    
+<div class="row">&nbsp;</div>
+  <div class="row">
+    <br/>
+    <div style="text-align: left;">
+        <h5><b>{{ reportName }} &nbsp; | </b> :: {{reportHeader}} </h5>    
+    </div>    
+    </div>
+   
+ <div class="card" style="background: #0000000e;">
+    <p-table #dt2 [value]="filteredItems" [scrollable]="true" scrollHeight="500px"
+          editMode="row" [tableStyle]="{'min-width': '50rem'}" styleClass="p-datatable-striped"
+          dataKey="ID" [loading]="loading" [paginator]="false"
+          [exportHeader]="'customExportHeader'">
+        <ng-template pTemplate="header">
+           <tr>
+            <th class="table-th" style="width: 7%;">Line</th>
+            <th class="table-th" style="width: 20%;">Salesman</th>
+            <th class="table-th" style="width: 15%;">Party Name</th>
+            <th class="table-th" style="width: 10%;">Due Amount</th>
+            <th class="table-th" style="width: 8%;">Received?</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+            <tr class="table-tr" [pEditableRow]="rowData">
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.line}}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.salesman}}
+              </td>              
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.partyname}}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
+                {{ rowData.amount | currency: '₹' }}
+              </td>
+              <td class="table-tr" style="border: 1px solid black;">
+              &nbsp;<p-radioButton class="p-input-sm"
+                name="completed{{rowData.id}}" value="Y" [(ngModel)]="rowData.received" label=" Yes">
+              </p-radioButton>&nbsp;&nbsp;
+              &nbsp;<p-radioButton class="p-input-sm" name="completed{{rowData.id}}" value="N" [(ngModel)]="rowData.received" label=" No">
+              </p-radioButton>
+            </td>
+              
+            </tr>            
+        </ng-template>
+  
+        <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="5"><h3 style="text-align: center;color: red;"><b>No data found. Please change date and click on View button.</b></h3></td>
+          </tr>
+      </ng-template>
+    </p-table>
+  </div>

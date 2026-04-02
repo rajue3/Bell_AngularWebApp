@@ -53,13 +53,14 @@ export class SharedService {
     //alert(date1 + '-' + date2);
     console.log('GetSalebyShopsBillDateWithBillNo URL:',this.APIUrl + 'bell/GetSalebyShopsBillDate/' + strReportType + '/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
     return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/' + strReportType + '/' + strLine + '/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
-    //USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE
+    //USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE_26JAN25
   }
   GetSalebyShopsBillDate(strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
     //alert(date1 + '-' + date2);
     //alert(this.APIUrl + 'bell/GetLSItemsByDate/' + strType + '/' + date1 +'/'+ date2);
     return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/SHOPWISE/' + strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
-    //USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE
+    //USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE  --REMOVED
+    //USP_SHOP_WISE_SALES_COUNT_BY_BILLDATE_26JAN25
   }
   GetSalebyBillNumber(strLine:string,strArea:string,shop:string,date1:any,date2:any): Observable<any[]> {
     return this.http.get<any>(this.APIUrl + 'bell/GetSalebyShopsBillDate/BILLWISE/' + strLine + '/'+ strArea + '/' + shop.replace(/\//g,'@') + '/' + date1+ '/' + date2 );
@@ -93,11 +94,11 @@ export class SharedService {
     return this.http.get<any>(this.APIUrl + 'bell/GetLSItemsByAreaDate/' + Report + '/'+ Area + '/' + Shop.replace(/\//g,'@').replace(/&/g,'$') + '/' + billdate );
     //BELL_GET_LS_ItemsByArea_Date
   }
-  getLSTotalSalesByArea(strArea:string,date1:any,date2:any): Observable<any[]> {
+  getLSTotalSalesByArea(strArea:string,date1:any,date2:any,searchBy:string): Observable<any[]> {
     //alert(date1 + '-' + date2);
     //alert(this.APIUrl + 'bell/GetLSTotalSalesByArea_New/' + strArea + '/' + date1 +'/'+ date2);
     //return this.http.get<any>(this.APIUrl + 'bell/GetLSItemsByDate/' + strType + '/' + date1 +'/'+ date2);
-    return this.http.get<any>(this.APIUrl + 'bell/GetLSTotalSalesByArea_New/' + strArea + '/' + date1 +'/'+ date2);
+    return this.http.get<any>(this.APIUrl + 'bell/GetLSTotalSalesByArea_New/' + strArea + '/' + date1 + '/' + date2 +'/' + searchBy);
     //BELL_GET_TOTAL_SALES_BY_AREA_NEW
   }
   GetTotalSalesByShop(strLine:string,strArea:string,shop:string,date1:any,date2:any,totalamount:any): Observable<any[]> {
