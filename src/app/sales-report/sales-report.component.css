@@ -2,3 +2,102 @@ th {
   background-color: #337ab7;
   color:white;
 }
+
+/* Compact mat-datepicker styles */
+.sales-date-field {
+  width: 160px !important;
+}
+
+.sales-date-field .mat-mdc-form-field-flex {
+  height: 32px !important;
+}
+
+.sales-date-field .mat-mdc-text-field-wrapper {
+  padding: 0 8px !important;
+}
+
+.sales-date-field .mat-mdc-form-field-infix {
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+  min-height: 28px !important;
+}
+
+.sales-date-field input {
+  font-size: 12px !important;
+}
+
+.sales-date-field .mat-datepicker-toggle {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.sales-date-field .mat-datepicker-toggle-icon {
+  font-size: 16px !important;
+}
+
+/* Custom smaller datepicker icon */
+.sales-date-field .mat-datepicker-toggle-default-icon {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.sales-date-field .mat-datepicker-toggle button {
+  width: 18px !important;
+  height: 18px !important;
+  padding: 0 !important;
+}
+
+.sales-date-field .mat-datepicker-toggle button .mat-icon {
+  font-size: 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  line-height: 14px !important;
+}
+
+/* Styles for sales report table */
+.tablewithborder {
+  height: 350px;display: block;width: 100%;overflow-x: auto;
+  overflow-y: auto;font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.primengtable {
+  display: block;font-size: 9pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border-spacing: 2px;
+  padding: 1px;
+}
+
+.mytable {
+  height: 320px;display: block;width: 100%;font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.table-tr:hover {
+  border-color: currentColor;
+  background-color: #f5e0e0;
+ }
+ .table-th {
+  font-size: 8pt;font-family: Verdana, Geneva, Tahoma, sans-serif;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 4px;
+  text-align: left;
+  background-color: #337ab7;
+  color:white;
+ }
+
+.table-td 
+{
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 4px;
+  text-align: left;  
+}
+.table-td:hover {
+  border-color: currentColor;
+  background-color: #f4616186;
+ }
+ 
+.table-condensed{
+  font-size: 10px;
+}
+th {
+  background-color: #337ab7;
+  color:white;
+}

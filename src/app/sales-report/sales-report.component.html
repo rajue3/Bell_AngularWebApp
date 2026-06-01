@@ -1,24 +1,22 @@
-<h4 style="text-align: center;font-weight: bold;">Report2 :: Sales Report</h4>
+<h4 style="text-align: center;font-weight: bold;">Report2 :: SALES REPORT & SHOPS VISIT STATUS </h4>
 <div class="card">
 <table class="table-responsive" style="width: 500px;">
   <tr>
     <td>
-       Area
+       Line
       </td>
       <td>
-        <select [(ngModel)]="selectedArea" name="matArea" (change)="bindShopNames(selectedArea)">
+        <select [(ngModel)]="selectedArea" name="matArea" >
           <option value="all">--All--</option>
           <option *ngFor="let area of objAreas" value={{area.Line}}
            > {{area.Line}} </option>
         </select>
       </td>
-  </tr>
-  <tr>
-    <td>
+      <td>
        Date
       </td>
       <td>
-        <mat-form-field  style="width: 220px;" class="form-control">
+        <mat-form-field  style="width: 130px;" class="form-control sales-date-field">
           <input matInput [matDatepicker]="picker1" [formControl]="billDate1" placeholder="Bill Date"
           class="form-control">
           <mat-hint>
@@ -28,7 +26,7 @@
         </mat-form-field>        
       </td>
       <td>
-        <mat-form-field  style="width: 220px;" class="form-control">
+        <mat-form-field  style="width: 130px;" class="form-control sales-date-field">
           <input matInput [matDatepicker]="picker2" [formControl]="billDate2" placeholder="Bill Date"
           class="form-control">
           <mat-hint>To Date</mat-hint>
@@ -36,25 +34,44 @@
           <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>        
       </td>
+  </tr>
+  <tr>
       <td>
-        <!-- <button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">View</button> -->
-        &nbsp;<button class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">
-          <span *ngIf="submitting" class="spinner-border spinner-border-sm me-1"></span>
-          View </button>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        Filter
+        Filter&nbsp;
       </td>
       <td >
-        <filter-textbox (changed)="filterChanged($event)"></filter-textbox>
+        <filter-textbox (changed)="filterChanged($event)"
+        *ngIf="user?.usertype=='admin'"></filter-textbox>
       </td>
     </tr>
+  <tr>
+      <td colspan="2" style="text-align: left;">
+        Status&nbsp;<select [(ngModel)]="selectedVisitStatus" name="matVisitStatus">
+          <option value="all">--All--</option>
+          <option value="BILLED">Billed</option>
+          <option value="NO CASH">No Cash</option>
+          <option value="SHOP CLOSED">Shop Closed</option>
+          <option value="RETURN VISIT">Return Visit</option>
+          <option value="NOT VISITED">Not Visited</option>
+        </select>
+      </td>
+      <td colspan="2" style="text-align: center;">
+        <button *ngIf="user?.usertype=='admin'" class="btn btn-primary" (click)="onSubmitClicked(selectedArea)">
+          <span *ngIf="submitting1" class="spinner-border spinner-border-sm me-1"></span>
+          View </button>
+        &nbsp;<button class="btn btn-primary" (click)="onVisitShopsClicked(selectedArea)">
+          <span *ngIf="submitting2" class="spinner-border spinner-border-sm me-1"></span>
+          View Shop Visits </button>
+      </td>
+      <td colspan="2" style="text-align: center;">
+          Total Areas : <b>{{varTotalAreas}}</b><br/>Total Shops : <b>{{ varTotalShops }}</b>
+      </td>
+    </tr>
+    
 </table>
-</div>
-<div class="card">
-  <div style="font-size: 12px;color: white;font-family: Verdana, sans-serif;">
+      <br/>
+<div class="card" *ngIf="reportType==='report1'">
+  <div style="font-size: 11px;color: white;font-family: Verdana, sans-serif;">
     <table class="table table-hover">
       <thead >
         <tr>
@@ -90,6 +107,72 @@
       </tbody>
     </table>
   </div>
+</div>
+<div class="card" style="background: #0000000e;" *ngIf="reportType==='report2'">
+  <div style="font-size: 12px;color: white;font-family: Verdana, sans-serif;">
+  <p-table #dt2 [value]="shopVisitsDataSource" [scrollable]="true" scrollHeight="500px" [tableStyle]="{ 'min-width': '50rem' }"
+        dataKey="id" [rows]="10" selectionMode="single" [columns]="cols"
+        [rowsPerPageOptions]="[10, 25, 50]" [loading]="loading" [paginator]="false" paginatorPosition="top"
+        [exportHeader]="'customExportHeader'"
+        >
+      <ng-template pTemplate="header" let-columns>
+         <tr>
+          <th class="table-th" style="min-width:100px" *ngFor="let col of columns"
+            pFrozenColumn [frozen]="col.isFrozenColumn" >{{col.header}}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns" let-ri="rowIndex">
+          <tr class="table-tr">
+            <td class="table-td" style="color:{{dynamicRowColor}};" 
+            *ngFor="let col of columns" pFrozenColumn [frozen]="col?.isFrozenColumn">
+              <!-- {{rowData[col.field] || '0'}}  -->
+              {{ formatFieldValue(col.field,rowData[col.field],ri) }}
+            </td>
+          </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="5"><h3 style="text-align: center;color: red;"><b>No data found.</b></h3></td>
+        </tr>
+    </ng-template>
+  </p-table>
+</div>
+</div>
+<!-- <div class="card" *ngIf="reportType==='report2'">
+  <div style="font-size: 10px;color: white;font-family: Verdana, sans-serif;">
+    <table class="table table-hover" >
+      <thead >
+        <tr>
+          <th>LINE</th>
+          <th>AREA</th>
+          <th>SHOP NAME</th>
+          <th>SALESMAN</th>
+          <th>BILL DATE</th>
+          <th>TIME TAKEN</th>
+          <th>VISIT STATUS</th>
+          <th>BILLING START DATE</th>
+          <th>BILLING END DATE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let dataItem of shopVisitsDataSource;">
+          <td>{{dataItem.LINE}}</td>
+          <td>{{dataItem.AREA}}</td>
+          <td>{{dataItem.SHOPNAME}}</td>
+          <td>{{dataItem.SALESMAN}}</td>
+          <td>{{datePipe.transform(dataItem.ORDERDATE,'dd-MM-yyyy')}}</td>
+          <td><b>{{getTimeDiff(dataItem.BILLING_START_DATE,dataItem.BILLING_END_DATE)}}</b></td>
+          <td>{{dataItem.SHOP_VISIT_STATUS}}</td>
+          <td>{{datePipe.transform(dataItem.BILLING_START_DATE, 'dd-MM-yyyy hh:mm a')}} </td>
+          <td>{{datePipe.transform(dataItem.BILLING_END_DATE, 'dd-MM-yyyy hh:mm a')}}</td>
+        </tr>
+        <tr *ngIf="shopVisitsDataSource.length==0"><td colspan="4" style="color:red;font-weight: bold;text-align: center;">
+          No data found. Please change Area and Bill Date.</td></tr>
+      </tbody>
+    </table>
+  </div> 
+  </div>-->
   <!-- <div class="table">
     <table class="table table-hover">
       <thead >

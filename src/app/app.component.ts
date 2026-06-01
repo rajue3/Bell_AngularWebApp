@@ -24,6 +24,15 @@ export class AppComponent {
       link.click();
       document.body.removeChild(link);
     }
+
+    downloadMobileApp_Beta() {
+      const link = document.createElement('a');
+      link.href = 'assets/app-release-new.apk';
+      link.download = 'app-release-new.apk';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   //isSticky: boolean = false;
   title = 'bhavani-entrysheet';
   user?: User | null;

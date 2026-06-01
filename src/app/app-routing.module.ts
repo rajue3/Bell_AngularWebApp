@@ -31,7 +31,7 @@ const routes: Routes = [
   { path: 'account', loadChildren: accountModule },
 
   { path: 'cust', component: AdminComponent, canActivate: [AuthGuard, AdminGuard]},
-  { path: 'sales', component: SalesReportComponent, canActivate: [AuthGuard, AdminGuard]},
+  { path: 'sales', component: SalesReportComponent, canActivate: [AuthGuard]},
   { path: 'itemwise-sales', component: ItemWiseSalesComponent, canActivate: [AuthGuard, AdminGuard]},
   { path: 'weekly', component: WeeklyReportComponent, canActivate: [AuthGuard, AdminGuard]},
   { path: 'weeklyrepo2', component: WeeklyItemsCountComponent, canActivate: [AuthGuard, AdminGuard]},
